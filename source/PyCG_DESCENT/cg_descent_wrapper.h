@@ -50,9 +50,11 @@ inline double value_gradient(double* g, double* x, INT n){
     return glob_pot->get_energy_gradient(xarray, garray);
 }
 
-}
+};
 
-class pycg_descent{
+namespace pycgd{
+
+class cg_descent{
 protected:
     std::shared_ptr<pele::BasePotential> m_pot;
     cg_parameter m_parm;
@@ -62,7 +64,7 @@ protected:
     size_t m_nfev;
     bool m_success;
 public:
-    pycg_descent(std::shared_ptr<pele::BasePotential> potential, const pele::Array<double> x0, size_t PrintLevel=0, double tol=1e-4):
+    cg_descent(std::shared_ptr<pele::BasePotential> potential, const pele::Array<double> x0, double tol=1e-4,  size_t PrintLevel=0):
         m_pot(potential),
         m_parm(),
         m_stats(),
@@ -82,14 +84,15 @@ public:
         m_parm.PrintLevel = PrintLevel;
     };
 
-    ~pycg_descent(){}
+    ~cg_descent(){}
 
     //run
     inline void run(){
         glob_pot = m_pot.get();
         glob_nfev = 0; //reset global variable
 
-        INT cgout = cg_descent(m_x.data(), m_x.size(), &m_stats, &m_parm, m_tol, value, gradient, value_gradient, NULL);
+        //using ::cg_descent call in the global namespace (the one in CG_DESCENT 6.7), this resolves the ambiguity
+        INT cgout = ::cg_descent(m_x.data(), m_x.size(), &m_stats, &m_parm, m_tol, value, gradient, value_gradient, NULL);
         m_success = this->test_success(cgout);
         m_nfev = glob_nfev;
 
@@ -101,7 +104,7 @@ public:
         this->run();
     }
 
-    inline void reset(pele::Array<double> x){
+    inline void reset(pele::Array<double> &x){
             this->set_x(x);
             m_nfev = 0;
             m_success = false;
@@ -136,7 +139,23 @@ public:
     inline size_t get_ngrad(){ return m_stats.ngrad; };
     /* total number of function evaluations from global counter*/
     inline size_t get_nfev(){ return m_nfev; };
+    /*return success status*/
+    inline bool success(){ return m_success; }
+    /*return modified coordinates*/
+    inline pele::Array<double> get_x(){ return m_x.copy(); };
+    /*return gradient*/
+    inline pele::Array<double> get_g(){
+        pele::Array<double> g(m_x.size());
+        gradient(g.data(), m_x.data(),  m_x.size());
+        return g.copy();
+    };
+    /*get root mean square gradient*/
+    inline double get_rms(){
+        pele::Array<double> g = this->get_g();
+        return norm(g)/sqrt(m_x.size());
+    };
 
+protected:
     inline bool test_success(INT cgout){
         if (cgout == 0){
             return true;
@@ -188,4 +207,5 @@ public:
     }
 };
 
+}
 #endif

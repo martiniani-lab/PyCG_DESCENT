@@ -40,7 +40,7 @@ int main(int argc, char ** argv)
     std::cout<<"lbfgs avg nfev "<<tot_nfev_lbfgs/totiter<<std::endl;*/
 
 //conjugate gradient descent
-    pycg_descent cg_descent(lj, x);
+    pycgd::cg_descent cg_descent(lj, x);
 
 //    size_t tot_nfev_cgd = 0;
     for (size_t j=0;j<totiter;++j)
