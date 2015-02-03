@@ -73,6 +73,7 @@ public:
         m_parm.memory = 0;
         m_parm.maxit = 1e5;
     };
+
     ~pycg_descent(){}
 
     //run
@@ -83,15 +84,15 @@ public:
     }
 
     inline void run(size_t maxiter){
-        this->set_max_iter(maxiter);
+        this->set_maxit(maxiter);
         this->run();
     }
 
+    inline void set_maxit(size_t val){ m_parm.maxit = (INT) val; }
     inline void set_memory(size_t memory){ m_parm.memory = (INT) memory; }
+    inline void set_AWolfeFac(double val){ m_parm.AWolfeFac = val; }
+    inline void set_AWolfe(bool val){ m_parm.AWolfe = (int) val; }
     inline void use_lbfgs(bool val){ m_parm.LBFGS = (int) val; }
-    inline void set_AWolfFac(bool val){ m_parm.AWolfe = (int) val; }
-    inline void set_AWolfFac(size_t val){ m_parm.AWolfeFac = (INT) val; }
-    inline void set_maxit(size_t val){ m_parm.maxit = (int) val; }
     inline void set_QuadStep(bool val){ m_parm.QuadStep = (int) val; }
     inline void set_UseCubic(bool val){ m_parm.UseCubic = (int) val; }
 
