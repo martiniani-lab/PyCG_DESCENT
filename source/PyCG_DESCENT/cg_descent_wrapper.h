@@ -25,8 +25,10 @@
  *
 */
 
-std::shared_ptr<pele::BasePotential> glob_pot;
-size_t glob_nfev=0;
+namespace{
+
+pele::BasePotential* glob_pot;
+size_t glob_nfev;
 
 inline double value(double* x, INT n){
     pele::Array<double> xarray(x, (size_t) n);
@@ -46,6 +48,8 @@ inline double value_gradient(double* g, double* x, INT n){
     pele::Array<double> garray(g, (size_t) n);
     ++glob_nfev;
     return glob_pot->get_energy_gradient(xarray, garray);
+}
+
 }
 
 class pycg_descent{
@@ -68,8 +72,8 @@ public:
         m_nfev(0),
         m_success(false)
     {
-        glob_pot = m_pot;
-        cg_default(&m_parm); /*set default parameter values*/
+        /*set default parameter values*/
+        cg_default(&m_parm);
         m_parm.PrintFinal = FALSE;
         m_parm.AWolfeFac = 0.;
         m_parm.AWolfe = FALSE;
@@ -81,10 +85,14 @@ public:
 
     //run
     inline void run(){
+        glob_pot = m_pot.get();
+        glob_nfev = 0; //reset global variable
+
         INT cgout = cg_descent(m_x.data(), m_x.size(), &m_stats, &m_parm, m_tol, value, gradient, value_gradient, NULL);
         m_success = this->test_success(cgout);
         m_nfev = glob_nfev;
-        glob_nfev = 0; //reset global variable
+
+        glob_pot = NULL;
     }
 
     inline void run(size_t maxiter){
