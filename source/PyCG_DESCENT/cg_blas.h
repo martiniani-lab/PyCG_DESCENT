@@ -1,3 +1,6 @@
+#ifndef _CGD_BLAS_H__
+#define _CGD_BLAS_H__
+
 /* If the BLAS are not installed, then the following definitions
    can be ignored. If the BLAS are available, then to use them,
    comment out the the next statement (#define NOBLAS) and make
@@ -9,6 +12,10 @@
    less efficient than the cg_descent unrolled loops. Hence,
    START parameters should be specified to determine when to start
    using the BLAS. */
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #define NOBLAS
 
@@ -79,3 +86,9 @@ void CG_DCOPY (BLAS_INT *n, double *DX, BLAS_INT *incx, double *DY,
         BLAS_INT *incy) ;
 
 BLAS_INT CG_IDAMAX (BLAS_INT *n, double *DX, BLAS_INT *incx) ;
+
+#ifdef __cplusplus
+}
+#endif
+
+#endif

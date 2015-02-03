@@ -1,5 +1,5 @@
-#ifndef _PELE_CGD_WRAPPER_H__
-#define _PELE_CGD_WRAPPER_H__
+#ifndef _CGD_WRAPPER_H__
+#define _CGD_WRAPPER_H__
 
 #include <math.h>
 #include <memory>
@@ -57,12 +57,12 @@ protected:
     std::shared_ptr<pele::BasePotential> m_pot;
     cg_parameter m_parm;
     cg_stats m_stats;
-    pele::Array<double> m_x0, m_x, m_g;
+    pele::Array<double> m_x0, m_x;
     double m_tol;
     size_t m_nfev;
     bool m_success;
 public:
-    pycg_descent(std::shared_ptr<pele::BasePotential> potential, const pele::Array<double> x0, size_t iprint=0, double tol=1e-4):
+    pycg_descent(std::shared_ptr<pele::BasePotential> potential, const pele::Array<double> x0, size_t PrintLevel=0, double tol=1e-4):
         m_pot(potential),
         m_parm(),
         m_stats(),
@@ -79,6 +79,7 @@ public:
         m_parm.AWolfe = FALSE;
         m_parm.memory = 0;
         m_parm.maxit = 1e5;
+        m_parm.PrintLevel = PrintLevel;
     };
 
     ~pycg_descent(){}
@@ -100,6 +101,13 @@ public:
         this->run();
     }
 
+    inline void reset(pele::Array<double> x){
+            this->set_x(x);
+            m_nfev = 0;
+            m_success = false;
+        }
+
+    inline void set_PrintLevel(size_t val){ m_parm.PrintLevel = (INT) val; }
     inline void set_maxit(size_t val){ m_parm.maxit = (INT) val; }
     inline void set_memory(size_t memory){ m_parm.memory = (INT) memory; }
     inline void set_AWolfeFac(double val){ m_parm.AWolfeFac = val; }
@@ -107,6 +115,10 @@ public:
     inline void use_lbfgs(bool val){ m_parm.LBFGS = (int) val; }
     inline void set_QuadStep(bool val){ m_parm.QuadStep = (int) val; }
     inline void set_UseCubic(bool val){ m_parm.UseCubic = (int) val; }
+    inline void set_x(pele::Array<double> x){
+        m_x = x.copy();
+        m_x0.assign(m_x);
+    }
 
     /*function value at solution */
     inline double get_f(){ return m_stats.f; };

@@ -1,6 +1,10 @@
 #ifndef _CGD_DESCENT_H__
 #define _CGD_DESCENT_H__
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 #include <math.h>
 #include <limits.h>
 #include <float.h>
@@ -265,5 +269,9 @@ PRIVATE void cg_printParms
 (
     cg_parameter  *Parm
 ) ;
+
+#ifdef __cplusplus
+}
+#endif
 
 #endif
