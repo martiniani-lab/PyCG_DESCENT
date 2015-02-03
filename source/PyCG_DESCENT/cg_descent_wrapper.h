@@ -56,6 +56,7 @@ protected:
     pele::Array<double> m_x0, m_x, m_g;
     double m_tol;
     size_t m_nfev;
+    bool m_success;
 public:
     pycg_descent(std::shared_ptr<pele::BasePotential> potential, const pele::Array<double> x0, size_t iprint=0, double tol=1e-4):
         m_pot(potential),
@@ -64,7 +65,8 @@ public:
         m_x0(x0.copy()),
         m_x(x0.copy()),
         m_tol(tol),
-        m_nfev(0)
+        m_nfev(0),
+        m_success(false)
     {
         cg_default(&m_parm); /*set default parameter values*/
         m_parm.PrintFinal = FALSE;
@@ -79,6 +81,7 @@ public:
     //run
     inline void run(){
         INT cgout = cg_descent(m_x.data(), m_x.size(), &m_stats, &m_parm, m_tol, value, gradient, value_gradient, NULL);
+        m_success = this->test_success(cgout);
         m_nfev = glob_nfev;
         glob_nfev = 0; //reset global variable
     }
@@ -113,7 +116,7 @@ public:
     /* total number of function evaluations from global counter*/
     inline size_t get_nfev(){ return m_nfev; };
 
-    inline bool success(INT cgout){
+    inline bool test_success(INT cgout){
         if (cgout == 0){
             return true;
         }
