@@ -68,6 +68,7 @@ public:
         m_nfev(0),
         m_success(false)
     {
+        glob_pot = m_pot;
         cg_default(&m_parm); /*set default parameter values*/
         m_parm.PrintFinal = FALSE;
         m_parm.AWolfeFac = 0.;
