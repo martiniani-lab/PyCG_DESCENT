@@ -76,9 +76,8 @@ public:
     ~pycg_descent(){}
 
     //run
-
     inline void run(){
-        INT cgout = cg_descent(xcopy.data(), xcopy.size(), &Stats, &Parm, tol, value, gradient, value_gradient, NULL);
+        INT cgout = cg_descent(m_x.data(), m_x.size(), &m_stats, &m_parm, m_tol, value, gradient, value_gradient, NULL);
         m_nfev = glob_nfev;
         glob_nfev = 0; //reset global variable
     }
