@@ -50,7 +50,7 @@ inline double value_gradient(double* g, double* x, INT n){
 
 class pycg_descent{
 protected:
-    pele::BasePotential m_pot;
+    std::shared_ptr<pele::BasePotential> m_pot;
     cg_parameter m_parm;
     cg_stats m_stats;
     pele::Array<double> m_x0, m_x, m_g;
