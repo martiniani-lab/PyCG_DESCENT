@@ -98,7 +98,7 @@ cdef class _Cdef_CGDescent(object):
         self.thisptr.get().set_UseCubic(val)
     
 class CGDescent(_Cdef_CGDescent):
-    """This class is the python interface for the c++ LBFGS implementation
+    """This class defines the python interface for c++ CG_DESCENT cpp wrapper
     """
         
         

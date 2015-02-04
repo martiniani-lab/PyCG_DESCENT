@@ -30,27 +30,27 @@ namespace{
 pele::BasePotential* glob_pot;
 size_t glob_nfev;
 
-inline double value(double* x, INT n){
+inline double pycgd_value(double* x, INT n){
     pele::Array<double> xarray(x, (size_t) n);
     ++glob_nfev;
     return glob_pot->get_energy(xarray);
 }
 
-inline void gradient(double* g, double* x, INT n){
+inline void pycgd_gradient(double* g, double* x, INT n){
     pele::Array<double> xarray(x, (size_t) n);
     pele::Array<double> garray(g, (size_t) n);
     ++glob_nfev;
     double f = glob_pot->get_energy_gradient(xarray, garray);
 }
 
-inline double value_gradient(double* g, double* x, INT n){
+inline double pycgd_value_gradient(double* g, double* x, INT n){
     pele::Array<double> xarray(x, (size_t) n);
     pele::Array<double> garray(g, (size_t) n);
     ++glob_nfev;
     return glob_pot->get_energy_gradient(xarray, garray);
 }
 
-};
+}
 
 namespace pycgd{
 
@@ -92,7 +92,7 @@ public:
         glob_nfev = 0; //reset global variable
 
         //using ::cg_descent call in the global namespace (the one in CG_DESCENT 6.7), this resolves the ambiguity
-        INT cgout = ::cg_descent(m_x.data(), m_x.size(), &m_stats, &m_parm, m_tol, value, gradient, value_gradient, NULL);
+        INT cgout = ::cg_descent(m_x.data(), m_x.size(), &m_stats, &m_parm, m_tol, pycgd_value, pycgd_gradient, pycgd_value_gradient, NULL);
         m_success = this->test_success(cgout);
         m_nfev = glob_nfev;
 
@@ -146,7 +146,7 @@ public:
     /*return gradient*/
     inline pele::Array<double> get_g(){
         pele::Array<double> g(m_x.size());
-        gradient(g.data(), m_x.data(),  m_x.size());
+        m_pot->get_energy_gradient(m_x, g);
         return g.copy();
     };
     /*get root mean square gradient*/
