@@ -1,13 +1,9 @@
 # distutils: language = c++
 import sys
 import numpy as np
-
-from pele.potentials import _pele
-from pele.potentials cimport _pele
 from pele.optimize import Result
-
-cimport numpy as np
-from libcpp cimport bool as cbool
+from pele.potentials._pythonpotential import as_cpp_potential
+cimport PyCG_DESCENT._pycgd as _pycgd
 cimport cython
 
 @cython.boundscheck(False)
@@ -21,7 +17,6 @@ cdef pele_array_to_np_array(_pele.Array[double] v):
     
     return vnew
 
-
 cdef class _Cdef_CGDescent(object):
     """this class defines the python interface for c++ CG_DESCENT cpp wrapper 
     
@@ -30,13 +25,11 @@ cdef class _Cdef_CGDescent(object):
     for direct access to the underlying c++ optimizer use self.thisptr
     """
     
-    cdef _pele.BasePotential pot
-    
-    def __cinit__(self, x0, potential, double tol=1e-5, int M=0, int print_level=0,
-                  int nsteps=10000, logger=None):
+    def __cinit__(self, x0, potential, double tol=1e-5, int M=0, int print_level=0, int nsteps=10000, int verbosity=0):
         potential = as_cpp_potential(potential, verbose=verbosity>0)
         self.pot = potential
-        self.thisptr = shared_ptr[_pycgd.cCGGradient](new cCGDescent(self.pot.thisptr, 
+        cdef np.ndarray[double, ndim=1] x0c = np.array(x0, dtype=float)
+        self.thisptr = shared_ptr[_pycgd.cCGDescent](new cCGDescent(self.pot.thisptr, 
                              _pele.Array[double](<double*> x0c.data, x0c.size), tol, print_level))
         self.set_memory(M)
         self.set_maxiter(nsteps)
@@ -72,10 +65,10 @@ cdef class _Cdef_CGDescent(object):
         res.gnorm = self.thisptr.get().get_gnorm()
         res.rms = self.thisptr.get().get_rms()        
         res.nsteps = self.thisptr.get().get_iter()
-        res.itersub = self.thisptr.get().IterSub()
-        res.numsub = self.thisptr.get().NumSub()
-        res.nfunc = self.thisptr.get().nfunc()
-        res.ngrad = self.thisptr.get().ngrad()
+        res.itersub = self.thisptr.get().get_IterSub()
+        res.numsub = self.thisptr.get().get_NumSub()
+        res.nfunc = self.thisptr.get().get_nfunc()
+        res.ngrad = self.thisptr.get().get_ngrad()
         res.nfev = self.thisptr.get().get_nfev()
         res.success = bool(self.thisptr.get().success())
         return res

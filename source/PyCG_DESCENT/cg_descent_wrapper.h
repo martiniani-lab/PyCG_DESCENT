@@ -115,7 +115,7 @@ public:
     inline void set_memory(size_t memory){ m_parm.memory = (INT) memory; }
     inline void set_AWolfeFac(double val){ m_parm.AWolfeFac = val; }
     inline void set_AWolfe(bool val){ m_parm.AWolfe = (int) val; }
-    inline void use_lbfgs(bool val){ m_parm.LBFGS = (int) val; }
+    inline void set_lbfgs(bool val){ m_parm.LBFGS = (int) val; }
     inline void set_QuadStep(bool val){ m_parm.QuadStep = (int) val; }
     inline void set_UseCubic(bool val){ m_parm.UseCubic = (int) val; }
     inline void set_x(pele::Array<double> x){

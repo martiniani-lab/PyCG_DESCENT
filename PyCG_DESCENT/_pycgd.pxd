@@ -1,10 +1,11 @@
-from pele.potentials cimport _pele
+cimport pele.potentials._pele as _pele
 from pele.potentials._pele cimport shared_ptr
 from libcpp cimport bool as cbool
+cimport numpy as np
 
 cdef extern from "PyCG_DESCENT/cg_descent_wrapper.h" namespace "pycgd":
     cdef cppclass  cCGDescent "pycgd::cg_descent":
-        cCGDescent(_pele.cBasePotential *, _pele.Array[double], double, size_t) except +
+        cCGDescent(shared_ptr[_pele.cBasePotential], _pele.Array[double], double, size_t) except +
         void run(int) except+
         void run() except+
         void reset(_pele.Array[double]&) except+
@@ -29,3 +30,7 @@ cdef extern from "PyCG_DESCENT/cg_descent_wrapper.h" namespace "pycgd":
         _pele.Array[double] get_x() except+
         _pele.Array[double] get_g() except+
         cbool success() except+
+        
+cdef class _Cdef_CGDescent:
+    cdef shared_ptr[cCGDescent] thisptr      # hold a C++ instance which we're wrapping
+    cdef _pele.BasePotential pot
