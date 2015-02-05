@@ -13,13 +13,13 @@
  * where n is x.size(), grad_tol is a float
  * must have signature
  *
- *  double user_value(double *x, INT n);
- *  void mygrad(double *g, double *x, INT n);
+ *  double pycgd_value(double *x, INT n);
+ *  void pycgd_gradient(double *g, double *x, INT n);
  *
  * Performance is often improved if the user also provides a routine to
  * simultaneously evaluate the objective function and its gradient
  *
- *  double myvalgrad(double *g, double *x, INT n);
+ *  double pycgd_value_gradient(double *g, double *x, INT n);
  *
  *  NOTE:   this version relies on the pele library
  *
@@ -77,7 +77,7 @@ public:
         /*set default parameter values*/
         cg_default(&m_parm);
         m_parm.PrintFinal = FALSE;
-        m_parm.AWolfeFac = 0.;
+        m_parm.AWolfeFac = 0;
         m_parm.AWolfe = FALSE;
         m_parm.memory = 0;
         m_parm.maxit = 1e5;
@@ -90,6 +90,8 @@ public:
     inline void run(){
         glob_pot = m_pot.get();
         glob_nfev = 0; //reset global variable
+        m_nfev = 0;
+        m_success = false;
 
         //using ::cg_descent call in the global namespace (the one in CG_DESCENT 6.7), this resolves the ambiguity
         INT cgout = ::cg_descent(m_x.data(), m_x.size(), &m_stats, &m_parm, m_tol, pycgd_value, pycgd_gradient, pycgd_value_gradient, NULL);
@@ -110,14 +112,36 @@ public:
             m_success = false;
         }
 
+    /* Level 0 = no printing, ... , Level 3 = maximum printing */
     inline void set_PrintLevel(size_t val){ m_parm.PrintLevel = (INT) val; }
+    /* abort cg after maxit iterations */
     inline void set_maxit(size_t val){ m_parm.maxit = (INT) val; }
+    /* number of vectors stored in memory */
     inline void set_memory(size_t memory){ m_parm.memory = (INT) memory; }
+    /* T => use approximate Wolfe line search
+       F => use ordinary Wolfe line search, switch to approximate Wolfe when
+           |f_k+1-f_k| < AWolfeFac*C_k, C_k = average size of cost  */
     inline void set_AWolfeFac(double val){ m_parm.AWolfeFac = val; }
     inline void set_AWolfe(bool val){ m_parm.AWolfe = (int) val; }
+    /* T => use LBFGS
+       F => only use L-BFGS when memory >= n */
     inline void set_lbfgs(bool val){ m_parm.LBFGS = (int) val; }
+    /* T => attempt quadratic interpolation in line search when
+       |f_k+1 - f_k|/f_k <= QuadCutoff
+       F => no quadratic interpolation step */
     inline void set_QuadStep(bool val){ m_parm.QuadStep = (int) val; }
+    /* T => when possible, use a cubic step in the line search */
     inline void set_UseCubic(bool val){ m_parm.UseCubic = (int) val; }
+    /* if step is nonzero, it is the initial step of the initial line search */
+    inline void set_step(double val){ m_parm.step = val; }
+    /* terminate after nslow iterations without strict improvement in
+       either function value or gradient */
+    inline void set_nslow(size_t val){ m_parm.nslow = (INT) val; }
+    /* Stop Rules:
+       T => ||proj_grad||_infty <= max(grad_tol,initial ||grad||_infty*StopFact)
+       F => ||proj_grad||_infty <= grad_tol*(1 + |f_k|) */
+    inline void set_StopRule(bool val){ m_parm.StopRule = (int) val; }
+
     inline void set_x(pele::Array<double> x){
         m_x = x.copy();
         m_x0.assign(m_x);
