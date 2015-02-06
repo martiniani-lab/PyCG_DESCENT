@@ -82,6 +82,7 @@ public:
         m_parm.memory = 0;
         m_parm.maxit = 1e5;
         m_parm.PrintLevel = PrintLevel;
+        m_parm.psi2 = 10.0;
     };
 
     ~cg_descent(){}
