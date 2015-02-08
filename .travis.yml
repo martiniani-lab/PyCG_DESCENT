@@ -43,7 +43,7 @@ install:
   - pip install munkres hungarian pyro4 brewer2mpl coverage coveralls coveralls-merge mpi4py
   # download and install pele
   - pwd
-  - cd $HOME/build/pele-python
+  - cd $HOME/build/smcantab
   - git clone https://github.com/pele-python/pele.git
   - cd pele
   - python setup_with_cmake.py build_ext -i --fcompiler=gfortran
