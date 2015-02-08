@@ -1,5 +1,3 @@
-.. image:: https://coveralls.io/repos/smcantab/PyCG_DESCENT/badge.svg :target: https://coveralls.io/r/smcantab/PyCG_DESCENT
-
 .. image:: https://travis-ci.org/smcantab/PyCG_DESCENT.svg?branch=master
     :target: https://travis-ci.org/smcantab/PyCG_DESCENT
 
