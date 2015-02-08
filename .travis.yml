@@ -1,0 +1,95 @@
+language: python
+python:
+    - 2.7
+
+env:
+  - MPI=openmpi
+
+virtualenv:
+  system_site_packages: true
+
+branches:
+  only:
+    - master
+
+before_install:
+  # Use miniconda and conda packages to speed up dependency setup (principally 
+  # borrowed from https://gist.github.com/dan-blanchard/7045057
+  # and https://github.com/Jorge-C/ordination/blob/master/.travis.yml
+  - pwd
+  - sudo apt-get update -qq
+  - sudo apt-get install -qq libatlas-dev libatlas-base-dev liblapack-dev gfortran lcov
+  - gem install coveralls-lcov
+  - test $MPI == openmpi && MPIPACKAGES='openmpi-bin openmpi-dev'          || true
+  - sudo apt-get install -qq $MPIPACKAGES
+  - wget http://repo.continuum.io/miniconda/Miniconda-latest-Linux-x86_64.sh -O miniconda.sh
+  - chmod +x miniconda.sh
+  - ./miniconda.sh -b -p $HOME/miniconda
+  - export PATH="$HOME/miniconda/bin:$PATH"
+  # Update conda itself
+  - hash -r
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update conda
+  # Useful for debugging any issues with conda
+  - conda info -a
+  # matplotlib needs a DISPLAY
+  - "export DISPLAY=:99.0"
+  - "sh -e /etc/init.d/xvfb start"
+
+
+install:
+  - conda create --yes -n pelenv python=$TRAVIS_PYTHON_VERSION nose pip cython numpy scipy matplotlib sqlalchemy networkx
+  - source activate pelenv
+  - pip install munkres hungarian pyro4 brewer2mpl coverage coveralls coveralls-merge mpi4py
+  # download and install pele
+  - pwd
+  - cd $HOME/build/pele-python
+  - git clone https://github.com/pele-python/pele.git
+  - cd pele
+  - python setup_with_cmake.py build_ext -i --fcompiler=gfortran
+  - export PYTHONPATH="$PWD:$PYTHONPATH"
+  # build and install PyCG_DESCENT
+  - cd ../PyCG_DESCENT
+  - python setup.py build
+  - python setup.py install
+  - cp .coveragerc $HOME
+  - pwd
+  - sourcedir=$PWD
+  # build the c++ tests
+  - cd cpp_tests
+  - cpp_test_dir=$PWD
+  - ./get_gtest.sh
+  - cppbuild=$PWD/build
+  - mkdir $cppbuild && cd $cppbuild
+  - cmake ../source -DCMAKE_BUILD_TYPE=Coverage
+  - make
+
+script:
+  # avoid running in the checkout directory so nose finds built modules..
+  - rundir=$HOME
+  - cd $rundir
+  - nosetests -v --with-coverage PyCG_DESCENT
+  # do the c++ tests
+  - cd $cppbuild
+  - ./test_main
+
+after_success:
+  # generate the cpp coverage report
+  - cd $cppbuild
+  - lcov --capture --directory . -b . --output-file coverage.info
+  # Artificially change the directory of the c++ source files to the python
+  # site-packages directory.  This is purely so that it has the same root
+  # directory as the python files so that the coveralls website can find the
+  # source on github. This is an ugly hack, there must be a better way.
+  - site_packages_dir=$(dirname `python -c "import PyCG_DESCENT; print PyCG_DESCENT.__file__"`)
+  - site_packages_dir=$(readlink -f $site_packages_dir/..) # go one dir higher and clean up the dir name
+  - sed -i "s=$sourcedir=$site_packages_dir=g" coverage.info
+  # coverall-lcov requires the source files to exist, so copy them over
+  - cp -r $sourcedir/source $site_packages_dir
+  # remove unwanted directories from the coverage report
+  - lcov --remove coverage.info 'tests/*' '/usr/*' '/pele/*' --output-file coverage.info.cleaned
+  - coveralls-lcov -v -n coverage.info.cleaned > coverage.c.json
+  # need to be in source directory to call coverage
+  - cd $sourcedir # not sure if this is necessary
+  - cp $rundir/.coverage .
+  - coveralls-merge $cppbuild/coverage.c.json
