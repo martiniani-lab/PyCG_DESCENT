@@ -20,39 +20,6 @@ cdef pele_array_to_np_array(_pele.Array[double] v):
 cdef class _Cdef_CGDescent(object):
     """Python interface for c++ CG_DESCENT cpp wrapper
 
-    This class wraps the CG_DESCENT c++ wrapper into a cython class
-    for use in Python. This version of the wrapper relies on the
-    `pele <pele:pele>` library.
-
-    Parameters
-    ----------
-    x0 : numpy.array
-        these are the initial coordinates for the system
-    potential : :class:`BasePotential <pele:pele.potentials.BasePotential>`
-        the potential (or cost function) return energy, gradient and hessian
-        information given a set of coordinates
-    M : int
-        number of vectors stored in memory. M=0 corresponds to the standard
-        CG_DESCENT method, while M>0 corresponds to the (preconditioned)
-        Limited Memory version of the algorithm
-    tol: double
-        minimisation is terminated when the L^infty-Norm of the gradient is less
-        than tol
-    nsteps : int
-        maximum number of iterations
-    print_level: int 0 to 3
-        CG_DESCENT verbosity:
-        0 no output
-        1 to 3 different amount of details about stepping and line search
-    verbosity: int
-        level of verbosity for `potential <pele:pele.potentials.BasePotential>`
-
-    Attributes
-    ----------
-    potential : :class:`BasePotential <pele:pele.potentials.BasePotential>`
-        the potential (or cost function) return energy, gradient and hessian
-        information given a set of coordinates
-
     Notes
     -----
     for direct access to the underlying c++ optimizer use self.thisptr
@@ -534,5 +501,38 @@ cdef class _Cdef_CGDescent(object):
         self.thisptr.get().set_qrestart(val)
 
 class CGDescent(_Cdef_CGDescent):
-    """This class defines the python interface for c++ CG_DESCENT cpp wrapper
+    """Python interface for c++ CG_DESCENT cpp/cython wrapper
+
+    This class wraps the CG_DESCENT c++ wrapper into a cython class
+    for use in Python. This version of the wrapper relies on the
+    `pele <pele:pele>` library.
+
+    Parameters
+    ----------
+    x0 : numpy.array
+        these are the initial coordinates for the system
+    potential : :class:`BasePotential <pele:pele.potentials.BasePotential>`
+        the potential (or cost function) return energy, gradient and hessian
+        information given a set of coordinates
+    M : int
+        number of vectors stored in memory. M=0 corresponds to the standard
+        CG_DESCENT method, while M>0 corresponds to the (preconditioned)
+        Limited Memory version of the algorithm
+    tol: double
+        minimisation is terminated when the L^infty-Norm of the gradient is less
+        than tol
+    nsteps : int
+        maximum number of iterations
+    print_level: int 0 to 3
+        CG_DESCENT verbosity:
+        0 no output
+        1 to 3 different amount of details about stepping and line search
+    verbosity: int
+        level of verbosity for `potential <pele:pele.potentials.BasePotential>`
+
+    Attributes
+    ----------
+    potential : :class:`BasePotential <pele:pele.potentials.BasePotential>`
+        the potential (or cost function) return energy, gradient and hessian
+        information given a set of coordinates
     """
