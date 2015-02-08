@@ -108,11 +108,6 @@ def generate_cython():
 
 generate_cython()
 
-
-#
-# compile fortran extension modules
-#
-
 class ModuleList:
     def __init__(self, **kwargs):
         self.module_list = []
