@@ -8,7 +8,7 @@ SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = _build
 GH_PAGES_SOURCES = PyCG_DESCENT source cythonize.py setup_with_cmake.py CMakeLists.txt.in
-BRANCH = doxygen
+BRANCH = gh-pages
 
 # User-friendly check for sphinx-build
 ifeq ($(shell which $(SPHINXBUILD) >/dev/null 2>&1; echo $$?), 1)
