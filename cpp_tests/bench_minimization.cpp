@@ -23,7 +23,7 @@ int main(int argc, char ** argv)
     auto lj = std::make_shared<pele::LJ>(4., 4.);
 
     size_t totiter = 10;
-    /*size_t tot_nfev_lbfgs = 0;
+    size_t tot_nfev_lbfgs = 0;
     for (size_t j=0;j<totiter;++j)
     {
         for (size_t i = 0; i < x.size(); ++i) {
@@ -39,13 +39,12 @@ int main(int argc, char ** argv)
         std::cout<<"lbfgs f"<<lbfgs.get_f()<<std::endl;
         std::cout<<"lbfgs nfev"<<lbfgs.get_nfev()<<std::endl;
     }
-    std::cout<<"lbfgs avg nfev "<<tot_nfev_lbfgs/totiter<<std::endl;*/
+    std::cout<<"lbfgs avg nfev "<<tot_nfev_lbfgs/totiter<<std::endl;
 
 //conjugate gradient descent
     pycgd::cg_descent cg_descent(lj, x, 1e-4);
     cg_descent.set_memory(0);
 
-//    size_t tot_nfev_cgd = 0;
     size_t tot_nfev_cgd = 0;
     for (size_t j=0;j<totiter;++j)
     {
