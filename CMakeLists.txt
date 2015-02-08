@@ -1,0 +1,43 @@
+# this file is mean to be parsed by python before being a proper CMakeLists.txt file
+# in particular, the following strings will be set by python
+set(numpy_include /usr/lib/python2.7/dist-packages/numpy/core/include)
+set(PYTHON_INCLUDE_DIRS /usr/include/python2.7 /usr/include/python2.7)
+set(PYTHON_LDFLAGS "-lpthread -ldl -lutil -lm -lpython2.7 -Xlinker -export-dynamic -Wl,-O1 -Wl,-Bsymbolic-functions")
+set(pele_include /home/stefano/Work/pele/source)
+
+message("python include dirs: ${PYTHON_INCLUDE_DIRS}")
+message("numpy include dirs: ${numpy_include}")
+message("pele include dirs: ${pele_include}")
+include_directories(${numpy_include})
+include_directories(${PYTHON_INCLUDE_DIRS})
+include_directories(${pele_include})
+
+cmake_minimum_required(VERSION 2.8)
+
+enable_language(CXX)
+SET(CMAKE_CXX_FLAGS "-std=c++0x -Wall -Wextra -pedantic -O3")
+
+#cmake_policy(SET CMP0015 NEW)
+
+# set the PyCG_DESCENT include directory
+set(PyCG_DESCENT_include ${CMAKE_SOURCE_DIR}/source)
+include_directories(${PyCG_DESCENT_include})
+message("PyCG_DESCENT include directory: ${PyCG_DESCENT_include}")
+
+# build the PyCG_DESCENT library
+FILE(GLOB pele_sources ${pele_include}/*.cpp)
+FILE(GLOB PyCG_DESCENT_sources ${PyCG_DESCENT_include}/*.c*)
+add_library(PyCG_DESCENT_lib SHARED ${PyCG_DESCENT_sources} ${pele_sources})
+
+function(make_cython_lib cython_cxx_source)
+  get_filename_component(library_name ${cython_cxx_source} NAME)
+  string(REGEX REPLACE ".cxx$" "" library_name ${library_name})
+  add_library(${library_name} SHARED ${cython_cxx_source})
+  target_link_libraries(${library_name} PyCG_DESCENT_lib)
+  set_target_properties(${library_name} PROPERTIES PREFIX "")
+  message("making library ${library_name} from source ${cython_cxx_source}")
+endfunction(make_cython_lib)
+
+
+
+make_cython_lib(${CMAKE_SOURCE_DIR}/PyCG_DESCENT/_pycgd.cxx)

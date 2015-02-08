@@ -1,0 +1,46 @@
+#IncludeRegexLine: ^[ 	]*#[ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+/home/stefano/Work/PyCG_DESCENT/source/PyCG_DESCENT/cg_blas.h
+
+/home/stefano/Work/PyCG_DESCENT/source/PyCG_DESCENT/cg_descent.h
+math.h
+-
+limits.h
+-
+float.h
+-
+string.h
+-
+ctype.h
+-
+stdlib.h
+-
+stdio.h
+-
+
+/home/stefano/Work/PyCG_DESCENT/source/PyCG_DESCENT/cg_user.h
+limits.h
+-
+float.h
+-
+string.h
+-
+stdlib.h
+-
+stdio.h
+-
+
+/home/stefano/Work/PyCG_DESCENT/source/cg_descent.c
+PyCG_DESCENT/cg_user.h
+/home/stefano/Work/PyCG_DESCENT/source/PyCG_DESCENT/cg_user.h
+PyCG_DESCENT/cg_descent.h
+/home/stefano/Work/PyCG_DESCENT/source/PyCG_DESCENT/cg_descent.h
+PyCG_DESCENT/cg_blas.h
+/home/stefano/Work/PyCG_DESCENT/source/PyCG_DESCENT/cg_blas.h
+
