@@ -18,8 +18,41 @@ cdef pele_array_to_np_array(_pele.Array[double] v):
     return vnew
 
 cdef class _Cdef_CGDescent(object):
-    """this class defines the python interface for c++ CG_DESCENT cpp wrapper 
-    
+    """Python interface for c++ CG_DESCENT cpp wrapper
+
+    This class wraps the CG_DESCENT c++ wrapper into a cython class
+    for use in Python. This version of the wrapper relies on the
+    `pele <pele:pele>` library.
+
+    Parameters
+    ----------
+    x0 : numpy.array
+        these are the initial coordinates for the system
+    potential : :class:`BasePotential <pele:pele.potentials.BasePotential>`
+        the potential (or cost function) return energy, gradient and hessian
+        information given a set of coordinates
+    M : int
+        number of vectors stored in memory. M=0 corresponds to the standard
+        CG_DESCENT method, while M>0 corresponds to the (preconditioned)
+        Limited Memory version of the algorithm
+    tol: double
+        minimisation is terminated when the L^infty-Norm of the gradient is less
+        than tol
+    nsteps : int
+        maximum number of iterations
+    print_level: int 0 to 3
+        CG_DESCENT verbosity:
+        0 no output
+        1 to 3 different amount of details about stepping and line search
+    verbosity: int
+        level of verbosity for `potential <pele:pele.potentials.BasePotential>`
+
+    Attributes
+    ----------
+    potential : :class:`BasePotential <pele:pele.potentials.BasePotential>`
+        the potential (or cost function) return energy, gradient and hessian
+        information given a set of coordinates
+
     Notes
     -----
     for direct access to the underlying c++ optimizer use self.thisptr
@@ -35,6 +68,10 @@ cdef class _Cdef_CGDescent(object):
         self.set_maxiter(nsteps)
         
     def run(self, niter=None):
+        """run CG_DESCENT
+        :param niter: maximum number of iterations
+        :return: `Result <pele:pele.optimize.result>` container
+        """
         if niter is None:
             self.thisptr.get().run()
         else:
@@ -43,14 +80,36 @@ cdef class _Cdef_CGDescent(object):
         return self.get_result()
             
     def reset(self, coords):
+        """reset coordinates to a new state for a new run
+
+        :param coords: new coordinates
+        :return: void
+        """
         cdef np.ndarray[double, ndim=1] ccoords = np.array(coords, dtype=float)
         self.thisptr.get().reset(_pele.Array[double](<double*> ccoords.data, ccoords.size))
 
     def get_iter(self):
+        """ get number of iterattions
+        :return: int
+        """
         return self.thisptr.get().get_iter()
     
     def get_result(self):
-        """return a results object"""
+        """return a results object
+        :return: `Result <pele:pele.optimize.result>` container
+            *res.energy : function value
+            *res.coords : final coordinates
+            *res.grad : gradient vector
+            *res.gnorm : L^infy-norm of gradient vector
+            *res.rms : root mean square of gradient vector
+            *res.nsteps : number of steps
+            *res.itersub : number of iterations in subspace
+            *res.numsub :
+            *res.nfunc
+            *res.ngrad
+            *res.nfev
+            *res.success
+        """
         res = Result()
         
         cdef _pele.Array[double] xi = self.thisptr.get().get_x()
@@ -96,6 +155,15 @@ cdef class _Cdef_CGDescent(object):
         
     def set_use_cubic(self, val):
         self.thisptr.get().set_UseCubic(val)
+
+    def set_step(self, val):
+        self.thisptr.get().set_step(val)
+
+    def set_nslow(self, val):
+        self.thisptr.get().set_nslow(val)
+
+    def set_stop_rule(self, val):
+        self.thisptr.get().set_StopRule(val)
     
 class CGDescent(_Cdef_CGDescent):
     """This class defines the python interface for c++ CG_DESCENT cpp wrapper

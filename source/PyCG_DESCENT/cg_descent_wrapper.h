@@ -113,12 +113,15 @@ public:
             m_success = false;
         }
 
+    /*============================================================================
+      parameters that the user may wish to modify
+  ----------------------------------------------------------------------------*/
     /* Level 0 = no printing, ... , Level 3 = maximum printing */
-    inline void set_PrintLevel(size_t val){ m_parm.PrintLevel = (INT) val; }
+    inline void set_PrintLevel(int val){ m_parm.PrintLevel = val; }
     /* abort cg after maxit iterations */
     inline void set_maxit(size_t val){ m_parm.maxit = (INT) val; }
     /* number of vectors stored in memory */
-    inline void set_memory(size_t memory){ m_parm.memory = (INT) memory; }
+    inline void set_memory(int memory){ m_parm.memory = memory; }
     /* T => use approximate Wolfe line search
        F => use ordinary Wolfe line search, switch to approximate Wolfe when
            |f_k+1-f_k| < AWolfeFac*C_k, C_k = average size of cost  */
@@ -131,22 +134,125 @@ public:
        |f_k+1 - f_k|/f_k <= QuadCutoff
        F => no quadratic interpolation step */
     inline void set_QuadStep(bool val){ m_parm.QuadStep = (int) val; }
+    inline void set_QuadCutOff(double val){m_parm.QuadCutOff = val;}
+    /* maximum factor by which a quad step can reduce the step size */
+    inline void set_QuadSafe(double val){m_parm.QuadSafe = val;}
     /* T => when possible, use a cubic step in the line search */
     inline void set_UseCubic(bool val){ m_parm.UseCubic = (int) val; }
+    /* use cubic step when |f_k+1 - f_k|/|f_k| > CubicCutOff */
+    inline void set_CubicCutOff(double val){m_parm.CubicCutOff = val;}
+    /* |f| < SmallCost*starting cost => skip QuadStep and set PertRule = FALSE*/
+    inline void set_SmallCost(double val){m_parm.SmallCost = val;}
     /* if step is nonzero, it is the initial step of the initial line search */
     inline void set_step(double val){ m_parm.step = val; }
     /* terminate after nslow iterations without strict improvement in
        either function value or gradient */
-    inline void set_nslow(size_t val){ m_parm.nslow = (INT) val; }
+    inline void set_nslow(int val){ m_parm.nslow = val; }
     /* Stop Rules:
        T => ||proj_grad||_infty <= max(grad_tol,initial ||grad||_infty*StopFact)
        F => ||proj_grad||_infty <= grad_tol*(1 + |f_k|) */
     inline void set_StopRule(bool val){ m_parm.StopRule = (int) val; }
+    inline void set_StopFac(double val){m_parm.StopFac = val;}
 
     inline void set_x(pele::Array<double> x){
         m_x = x.copy();
         m_x0.assign(m_x);
     }
+    /* SubCheck and SubSkip control the frequency with which the subspace
+       condition is checked. It is checked for SubCheck*mem iterations and
+       if not satisfied, then it is skipped for Subskip*mem iterations
+       and Subskip is doubled. Whenever the subspace condition is statisfied,
+       SubSkip is returned to its original value. */
+    inline void set_SubCheck(int val){ m_parm.SubCheck = val; }
+    inline void set_SubSkip(int val){ m_parm.SubSkip = val; }
+    /* when relative distance from current gradient to subspace <= eta0,
+       enter subspace if subspace dimension = mem */
+    inline void set_eta0(double val){m_parm.eta0 = val;}
+    /* when relative distance from current gradient to subspace >= eta1,
+       leave subspace */
+    inline void set_eta1(double val){m_parm.eta1 = val;}
+    /* when relative distance from current direction to subspace <= eta2,
+       always enter subspace (invariant space) */
+    inline void set_eta2(double val){m_parm.eta2 = val;}
+    /* factor in [0, 1] used to compute average cost magnitude C_k as follows:
+       Q_k = 1 + (Qdecay)Q_k-1, Q_0 = 0,  C_k = C_k-1 + (|f_k| - C_k-1)/Q_k */
+    inline void set_Qdecay(double val){m_parm.Qdecay = val;}
+    /* T => estimated error in function value is eps*Ck,
+       F => estimated error in function value is eps */
+    inline void set_PertRule(bool val){m_parm.PertRule = (int) val;}
+    inline void set_eps(double val){m_parm.eps = val;}
+    /* factor by which eps grows when line search fails during contraction */
+    inline void set_egrow(double val){m_parm.egrow = val;}
+    /* T => check that f_k+1 - f_k <= debugtol*C_k
+       F => no checking of function values */
+    inline void set_debug(bool val){m_parm.debug = (int) val;}
+    inline void set_debugtol(double val){m_parm.debugtol = val;}
+    /* maximum number of times the bracketing interval grows during expansion */
+    inline void set_ntries(int val){m_parm.ntries = val;}
+    /* maximum factor secant step increases stepsize in expansion phase */
+    inline void set_ExpandSafe(double val){m_parm.ExpandSafe = val;}
+    /* factor by which secant step is amplified during expansion phase
+       where minimizer is bracketed */
+    inline void set_SecantAmp(double val){m_parm.SecantAmp = val;}
+    /* factor by which rho grows during expansion phase where minimizer is
+       bracketed */
+    inline void set_RhoGrow(double val){m_parm.RhoGrow = val;}
+    /* maximum number of times that eps is updated */
+    inline void set_neps(int val){m_parm.neps = val;}
+    /* maximum number of times the bracketing interval shrinks */
+    inline void set_nshrink(int val){m_parm.nshrink = val;}
+    /* maximum number of iterations in line search */
+    inline void set_nline(int val){m_parm.nline = val;}
+    /* conjugate gradient method restarts after (n*restart_fac) iterations */
+    inline void set_restart_fac(double val){m_parm.restart_fac = val;}
+    /* stop when -alpha*dphi0 (estimated change in function value) <= feps*|f|*/
+    inline void set_feps(double val){m_parm.feps = val;}
+    /* after encountering nan, growth factor when searching for
+       a bracketing interval */
+    inline void set_nan_rho(double val){m_parm.nan_rho = val;}
+    /* after encountering nan, decay factor for stepsize */
+    inline void set_nan_decay(double val){m_parm.nan_decay = val;}
+
+    /*============================================================================
+       technical parameters which the user probably should not touch
+  ----------------------------------------------------------------------------*/
+    /* Wolfe line search parameter */
+    inline void set_delta(double val){m_parm.delta = val;}
+    /* Wolfe line search parameter */
+    inline void set_sigma(double val){m_parm.sigma = val;}
+    /* decay factor for bracket interval width */
+    inline void set_gamma(double val){m_parm.gamma = val;}
+    /* growth factor when searching for initial bracketing interval */
+    inline void set_rho(double val){m_parm.rho = val;}
+    /* factor used in starting guess for iteration 1 */
+    inline void set_psi0(double val){m_parm.psi0 = val;}
+    /* in performing a QuadStep, we evaluate at point betweeen
+    [psi_lo, psi_hi]*psi2*previous step */
+    inline void set_psi_lo(double val){m_parm.psi_lo = val;}
+    inline void set_psi_hi(double val){m_parm.psi_hi = val;}
+    /* for approximate quadratic, use gradient at psi1*psi2*previous step
+    for initial stepsize */
+    inline void set_psi1(double val){m_parm.psi1 = val;}
+    /* when starting a new cg iteration, our initial guess for the line search
+    stepsize is psi2*previous step */
+    inline void set_psi2(double val){m_parm.psi2 = val;}
+    /* T => choose beta adaptively, F => use theta */
+    inline void set_AdaptiveBeta(bool val){m_parm.AdaptiveBeta = (int) val;}
+    /* lower bound factor for beta */
+    inline void set_BetaLower(double val){m_parm.BetaLower = val;}
+    /* parameter describing the cg_descent family */
+    inline void set_theta(double val){m_parm.theta = val;}
+    /* parameter in cost error for quadratic restart criterion */
+    inline void set_qeps(double val){m_parm.qeps = val;}
+    /* parameter used to decide if cost is quadratic */
+    inline void set_qrule(double val){m_parm.qrule = val;}
+    /* number of iterations the function should be nearly quadratic before
+    a restart */
+    inline void set_qrestart(int val){m_parm.qrestart = val;}
+
+  /*============================================================================
+      results returned that can be retrieved by the user
+  ----------------------------------------------------------------------------*/
 
     /*function value at solution */
     inline double get_f(){ return m_stats.f; };
