@@ -25,7 +25,7 @@ cdef extern from "PyCG_DESCENT/cg_descent_wrapper.h" namespace "pycgd":
         void set_nslow(int) except+
         void set_StopRule(cbool) except+
         void set_StopFac(double) except+
-        void set_x(_pele.Array[double]) except+
+        #void set_x(_pele.Array[double]) except+
         void set_SubCheck(int) except+
         void set_SubSkip(int) except+
         void set_eta0(double) except+
