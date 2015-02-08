@@ -10,16 +10,16 @@ problem of the form::
 The algorithm was developed in the following papers (see `W. Hager website <http://users.clas.ufl.edu/hager/papers/CG/>`_):
 
 [1] W. W. Hager and H. Zhang, A new conjugate gradient method with guaranteed descent and an efficient line search,
-    SIAM Journal on Optimization, 16 (2005), 170-192.
+SIAM Journal on Optimization, 16 (2005), 170-192.
 
 [2] W. W. Hager and H. Zhang, Algorithm 851: CG_DESCENT, A conjugate gradient method with guaranteed descent,
-    ACM Transactions on Mathematical Software, 32 (2006), 113-137.
+ACM Transactions on Mathematical Software, 32 (2006), 113-137.
 
 [3] W. W. Hager and H. Zhang, A survey of nonlinear conjugate gradient methods, 
-    Pacific Journal of Optimization, 2 (2006), pp. 35-58.
+Pacific Journal of Optimization, 2 (2006), pp. 35-58.
 
 [4] W. W. Hager and H. Zhang, Limited memory conjugate gradients, 
-    www.math.ufl.edu/~hager/papers/CG/lcg.pdf
+www.math.ufl.edu/~hager/papers/CG/lcg.pdf
 
 This project wraps the CG_DESCENT C-library (Version 6.7) released by William Hager
 under the GNU general public license.
