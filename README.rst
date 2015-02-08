@@ -8,7 +8,7 @@ problem of the form::
     min[f(x)]
 
 The algorithm was developed in the following papers
-(see `W. Hager website <www.math.ufl.edu/~hager/papers/CG>`_):
+(see `W. Hager website <http://users.clas.ufl.edu/hager/papers/CG/>`_):
 
 [1] W. W. Hager and H. Zhang, A new conjugate gradient method
     with guaranteed descent and an efficient line search,
