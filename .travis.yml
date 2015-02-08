@@ -57,6 +57,5 @@ install:
 
 script:
   # avoid running in the checkout directory so nose finds built modules..
-  - rundir=$HOME
-  - cd $rundir
+  - cd $HOME/build/smcantab/PyCG_DESCENT
   - nosetests -v --with-coverage PyCG_DESCENT
