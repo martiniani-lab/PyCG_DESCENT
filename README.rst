@@ -3,10 +3,9 @@ PyCG_DESCENT : Python Conjugate Gradient Descent
 
 Python wrapper for the Hager and Zang CG_DESCENT algorithm.
 CG_DESCENT is a conjugate gradient algorithm for solving an unconstrained minimization
-problem of the form:
-.. math::
+problem of the form::
 
-    \min{f(x)}
+    min[f(x)]
 
 The algorithm was developed in the following papers
 (see `W. Hager website <www.math.ufl.edu/~hager/papers/CG>`_):
