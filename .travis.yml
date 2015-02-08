@@ -54,7 +54,6 @@ install:
   - python setup.py install
   - cp .coveragerc $HOME
   - pwd
-  - sourcedir=$PWD
 
 script:
   # avoid running in the checkout directory so nose finds built modules..
