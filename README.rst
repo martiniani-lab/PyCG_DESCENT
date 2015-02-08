@@ -25,13 +25,14 @@ The algorithm was developed in the following papers
 [4] W. W. Hager and H. Zhang, Limited memory conjugate gradients,
          www.math.ufl.edu/~hager/papers/CG/lcg.pdf
 
-This project wraps the CG_DESCENT C-library (Version 6.7) released by William Hager.
-CG_DESCENT is wrapper first into a c++ optimizer class on the model of the
+This project wraps the CG_DESCENT C-library (Version 6.7) released by William Hager
+under the GNU general public license.
+CG_DESCENT wraps the `cg_descent` method first into a c++ optimizer class on the model of the
 `pele <https://github.com/pele-python/pele>`_ project and then through Cython into
-the *CGDescent* Python class.
+the `CGDescent` Python class.
 
 The current release requires that the objective function to optimize derives from
-the `pele`_ *BasePotential* data structure, future releases will remove this dependency.
+the `pele`_ `BasePotential` data structure, future releases will remove this dependency.
 
 Required packages
 -----------------
@@ -74,7 +75,7 @@ modules in their current directories::
 
 Users can install PyCG_DESCENT in the standard python package location::
 
-  $ python setup.py build --fcompiler=gfortran
+  $ python setup.py build
   $ python setup.py install [--user]
 
 where --user installs it in $HOME/.local/
