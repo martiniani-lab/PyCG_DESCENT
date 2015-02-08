@@ -7,7 +7,8 @@ SPHINXOPTS    =
 SPHINXBUILD   = sphinx-build
 PAPER         =
 BUILDDIR      = _build
-GH_PAGES_SOURCES = PyCG_DESCENT source cythonize.py setup_with_cmake.py CMakeLists.txt.in
+GH_PAGES_SOURCES =
+#PyCG_DESCENT source cythonize.py setup_with_cmake.py CMakeLists.txt.in
 BRANCH = gh-pages
 
 # User-friendly check for sphinx-build

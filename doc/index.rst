@@ -41,7 +41,7 @@ Reference
 	
    CGDescent
 
-* `C++ Class Index <./doxygen/namespacePyCG_DESCENT.html>`_
+* `C++ Class Index <./doxygen/_build/html/namespacepycgd.html>`_
 
 Indices and tables
 ------------------
