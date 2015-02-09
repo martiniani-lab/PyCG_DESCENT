@@ -1,10 +1,10 @@
 # distutils: language = c++
 import sys
 import numpy as np
-from pele.optimize import Result
 from pele.potentials._pythonpotential import as_cpp_potential
 cimport PyCG_DESCENT._pycgd as _pycgd
 cimport cython
+from pele.optimize import Result
 
 @cython.boundscheck(False)
 cdef pele_array_to_np_array(_pele.Array[double] v):
@@ -36,8 +36,14 @@ cdef class _Cdef_CGDescent(object):
         
     def run(self, niter=None):
         """run CG_DESCENT
-        :param niter: maximum number of iterations
-        :return: `Result <pele:pele.optimize.result>` container
+        
+        Parameters
+        ----------
+        niter: maximum number of iterations
+        
+        Returns
+        -------
+        res:  `Result <pele:pele.optimize.result>` container
         """
         if niter is None:
             self.thisptr.get().run()
@@ -48,34 +54,58 @@ cdef class _Cdef_CGDescent(object):
             
     def reset(self, coords):
         """reset coordinates to a new state for a new run
-
-        :param coords: new coordinates
-        :return: void
+    
+        Parameters
+        ----------
+        coords: numpy.ndarray 
+            new coordinates
+        
+        Returns
+        -------
+        res: void
         """
         cdef np.ndarray[double, ndim=1] ccoords = np.array(coords, dtype=float)
         self.thisptr.get().reset(_pele.Array[double](<double*> ccoords.data, ccoords.size))
 
     def get_iter(self):
         """ get number of iterattions
-        :return: int
+        
+        Returns
+        -------
+        res: int
         """
         return self.thisptr.get().get_iter()
     
     def get_result(self):
-        """return a results object
-        :return: `Result <pele:pele.optimize.result>` container
-            *res.energy : function value
-            *res.coords : final coordinates
-            *res.grad : gradient vector
-            *res.gnorm : L^infy-norm of gradient vector
-            *res.rms : root mean square of gradient vector
-            *res.nsteps : number of steps
-            *res.itersub : number of iterations in subspace
-            *res.numsub :
-            *res.nfunc
-            *res.ngrad
-            *res.nfev
-            *res.success
+        """returns a results object
+        
+        Returns
+        -------
+        res: `Result <pele:pele.optimize.result>` container
+        res.energy : double 
+            function value
+        res.coords : numpy.ndarray
+            final coordinates
+        res.grad : numpy.ndarray
+            gradient vector
+        res.gnorm : double 
+            L^infy-norm of gradient vector
+        res.rms : double
+            root mean square of gradient vector
+        res.nsteps : int
+            number of steps
+        res.itersub : int
+            number of iterations in subspace
+        res.numsub : int
+            number of subspace calls
+        res.nfunc : int
+            energy calls
+        res.ngrad : int
+            gradient calls
+        res.nfev : int
+            total number of potential calls
+        res.success : bool
+            success
         """
         res = Result()
         
@@ -102,24 +132,39 @@ cdef class _Cdef_CGDescent(object):
     def set_print_level(self, val):
         """Level 0 = no printing, ... , Level 3 = maximum printing
 
-        :param val: int
-        :return: void
+        Parameters
+        ----------
+        val: int
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_PrintLevel(val)
     
     def set_maxiter(self, val):
         """abort cg after maxiter iterations
 
-        :param val: int
-        :return: void
+        Parameters
+        ----------
+        val: int
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_maxit(val)
     
     def set_memory(self, val):
         """number of vectors stored in memory
 
-        :param val: int
-        :return: void
+        Parameters
+        ----------
+        val: int
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_memory(val)
     
@@ -128,9 +173,14 @@ cdef class _Cdef_CGDescent(object):
         if False use ordinary Wolfe line search, switch to approximate Wolfe when
         |f_k+1-f_k| < AWolfeFac*C_k, C_k = average size of cost
 
-        :param val: bool
-        :param factor: double
-        :return: void
+        Parameters
+        ----------
+        val: bool
+        factor: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_AWolfe(val)
         if factor is not None:
@@ -139,8 +189,13 @@ cdef class _Cdef_CGDescent(object):
     def set_lbfgs(self, val):
         """set True to use LBFGS
 
-        :param val: bool
-        :return: void
+        Parameters
+        ----------
+        val: bool
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_lbfgs(val)
 
@@ -148,11 +203,16 @@ cdef class _Cdef_CGDescent(object):
         """set true to attempt quadratic interpolation in line search when
         |f_k+1 - f_k|/f_k <= QuadCutoff
 
-        :param val: bool
-        :param cutoff: double
-        :param quadsafe: double
+        Parameters
+        ----------
+        val: bool
+        cutoff: double
+        quadsafe: double
             maximum factor by which a quad step can reduce the step size
-        :return: void
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_QuadStep(val)
         if cutoff is not None:
@@ -163,9 +223,14 @@ cdef class _Cdef_CGDescent(object):
     def set_use_cubic(self, val, cutoff=None):
         """set True to use cubic step when |f_k+1 - f_k|/|f_k| > CubicCutOff
 
-        :param val: bool
-        :param cutoff: double
-        :return: void
+        Parameters
+        ----------
+        val: bool
+        cutoff: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_UseCubic(val)
         if cutoff is not None:
@@ -174,24 +239,39 @@ cdef class _Cdef_CGDescent(object):
     def set_small_cost(self, val):
         """when |f| < SmallCost*starting cost then skip QuadStep and set PertRule = False
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_SmallCost(val)
 
     def set_step(self, val):
         """if step is nonzero, it is the initial step of the initial line search
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_step(val)
 
     def set_nslow(self, val):
         """terminate after nslow iterations without strict improvement in either function value or gradient
 
-        :param val: int
-        :return: void
+        Parameters
+        ----------
+        val: int
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_nslow(val)
 
@@ -199,9 +279,14 @@ cdef class _Cdef_CGDescent(object):
         """set True to stop when ||proj_grad||_infty <= max(grad_tol,initial ||grad||_infty*StopFact)
         if False then stop when ||proj_grad||_infty <= grad_tol*(1 + |f_k|)
 
-        :param val: bool
-        :param factor: double
-        :return: void
+        Parameters
+        ----------
+        val: bool
+        factor: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_StopRule(val)
         if factor is not None:
@@ -215,9 +300,14 @@ cdef class _Cdef_CGDescent(object):
         Whenever the subspace condition is statisfied, SubSkip is returned to
         its original value.
 
-        :param check_freq: int
-        :param skip: int
-        :return: void
+        Parameters
+        ----------
+        check_freq: int
+        skip: int
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_SubCheck(check_freq)
         if skip is not None:
@@ -227,8 +317,13 @@ cdef class _Cdef_CGDescent(object):
         """when relative distance from current gradient to subspace <= eta0,
         enter subspace if subspace dimension = mem
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_eta0(val)
 
@@ -236,8 +331,13 @@ cdef class _Cdef_CGDescent(object):
         """when relative distance from current gradient to subspace >= eta1,
         leave subspace
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_eta1(val)
 
@@ -245,8 +345,13 @@ cdef class _Cdef_CGDescent(object):
         """when relative distance from current direction to subspace <= eta2,
         always enter subspace (invariant space)
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_eta2(val)
 
@@ -254,8 +359,13 @@ cdef class _Cdef_CGDescent(object):
         """factor in [0, 1] used to compute average cost magnitude C_k as follows:
         Q_k = 1 + (Qdecay)Q_k-1, Q_0 = 0,  C_k = C_k-1 + (|f_k| - C_k-1)/Q_k
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_Qdecay(val)
 
@@ -263,10 +373,15 @@ cdef class _Cdef_CGDescent(object):
         """if True estimated error in function value is eps*Ck
         otherwise estimated error in function value is eps
 
-        :param val: bool
-        :param eps: double
+        Parameters
+        ----------
+        val: bool
+        eps: double
             error in function value
-        :return: void
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_PertRule(val)
         if eps is not None:
@@ -275,8 +390,13 @@ cdef class _Cdef_CGDescent(object):
     def set_egrow(self, val):
         """factor by which eps grows when line search fails during contraction
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_egrow(val)
 
@@ -284,9 +404,14 @@ cdef class _Cdef_CGDescent(object):
         """set True to check that f_k+1 - f_k <= debugtol*C_k
         otherwise don't check function values
 
-        :param val: bool
-        :param tol: double
-        :return: void
+        Parameters
+        ----------
+        val: bool
+        tol: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_debug(val)
         if tol is not None:
@@ -295,16 +420,26 @@ cdef class _Cdef_CGDescent(object):
     def set_ntries(self, val):
         """maximum number of times the bracketing interval grows during expansion
 
-        :param val: int
-        :return: void
+        Parameters
+        ----------
+        val: int
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_ntries(val)
 
     def set_expand_safe(self, val):
         """maximum factor secant step increases stepsize in expansion phase
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_ExpandSafe(val)
 
@@ -312,112 +447,182 @@ cdef class _Cdef_CGDescent(object):
         """factor by which secant step is amplified during expansion phase
         where minimizer is bracketed
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_SecantAmp(val)
 
     def set_rho_grow(self, val):
         """factor by which rho grows during expansion phase where minimizer is bracketed
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_RhoGrow(val)
 
     def set_neps(self, val):
         """maximum number of times that eps is updated
 
-        :param val: int
-        :return: void
+        Parameters
+        ----------
+        val: int
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_neps(val)
 
     def set_nshrink(self, val):
         """maximum number of times the bracketing interval shrinks
 
-        :param val: int
-        :return: void
+        Parameters
+        ----------
+        val: int
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_nshrink(val)
 
     def set_nline(self, val):
         """maximum number of iterations in line search
 
-        :param val: int
-        :return: void
+        Parameters
+        ----------
+        val: int
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_nline(val)
 
     def set_restart_factor(self, val):
         """conjugate gradient method restarts after (n*restart_fac) iterations
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_restart_fac(val)
 
     def set_feps(self, val):
         """stop when -alpha*dphi0 (estimated change in function value) <= feps*|f|
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_feps(val)
 
     def set_nan_rho(self, val):
         """after encountering nan, growth factor when searching for a bracketing interval
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_nan_rho(val)
 
     def set_nan_decay(self, val):
         """after encountering nan, decay factor for stepsize
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_nan_decay(val)
 
     def set_delta(self, val):
         """Wolfe line search parameter
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_delta(val)
 
     def set_sigma(self, val):
         """Wolfe line search parameter
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_sigma(val)
 
     def set_gamma(self, val):
         """decay factor for bracket interval width
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_gamma(val)
 
     def set_rho(self, val):
         """growth factor when searching for initial bracketing interval
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_rho(val)
 
     def set_psi0(self, val):
         """factor used in starting guess for iteration 1
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_psi0(val)
 
@@ -425,9 +630,14 @@ cdef class _Cdef_CGDescent(object):
         """in performing a QuadStep, we evaluate at point betweeen
         [psi_lo, psi_hi]*psi2*previous step
 
-        :param low: double
-        :param high: double
-        :return: void
+        Parameters
+        ----------
+        low: double
+        high: double
+        
+        Returns
+        -------
+        res: void
         """
         if low is not None:
             self.thisptr.get().set_psi_lo(low)
@@ -438,8 +648,13 @@ cdef class _Cdef_CGDescent(object):
         """for approximate quadratic, use gradient at psi1*psi2*previous step
         for initial stepsize
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_psi1(val)
 
@@ -447,56 +662,91 @@ cdef class _Cdef_CGDescent(object):
         """when starting a new cg iteration, our initial guess for the line search
         stepsize is psi2*previous step
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_psi2(val)
 
     def set_adaptive_beta(self, val):
         """set True to choose beta adaptively
 
-        :param val: bool
-        :return: void
+        Parameters
+        ----------
+        val: bool
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_AdaptiveBeta(val)
 
     def set_beta_lower(self, val):
         """set lower bound factor for beta
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_BetaLower(val)
 
     def set_theta(self, val):
         """parameter describing the cg_descent family
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_theta(val)
 
     def set_qeps(self, val):
         """parameter in cost error for quadratic restart criterion
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_qeps(val)
 
     def set_qrule(self, val):
         """parameter used to decide if cost is quadratic
 
-        :param val: double
-        :return: void
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_qrule(val)
 
     def set_qrestart(self, val):
         """number of iterations the function should be nearly quadratic before a restart
 
-        :param val: int
-        :return: void
+        Parameters
+        ----------
+        val: int
+        
+        Returns
+        -------
+        res: void
         """
         self.thisptr.get().set_qrestart(val)
 
