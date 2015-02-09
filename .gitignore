@@ -1,0 +1,13 @@
+*~
+*.cxx
+*.so
+*.pyc
+*.out
+*.log
+gtest*.zip
+build/
+cpp_tests/build/
+cpp_tests/gtest/
+cythonize.dat
+CMakeLists.txt
+PyCG_DESCENT/version.py

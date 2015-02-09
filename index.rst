@@ -1,10 +1,6 @@
 PyCG_DESCENT : Python Conjugate Gradient Descent
 ++++++++++++++++++++++++++++++++++++++++++++++++
 
-Source code: https://github.com/smcantab/PyCG_DESCENT
-
-Documentation: http://smcantab.github.io/PyCG_DESCENT/
-
 Python wrapper for the Hager and Zang CG_DESCENT algorithm.
 CG_DESCENT is a conjugate gradient algorithm for solving an unconstrained minimization
 problem of the form::
@@ -34,9 +30,8 @@ the :class:`CGDescent <PyCG_DESCENT:PyCG_DESCENT.CGDescent>` Python class.
 The current release requires that the objective function to optimize derives from
 the :class:`BasePotential <pele:pele.potentials.BasePotential>` data structure, future releases will remove this dependency.
 
-PyCG_DESCENT has been authored by Stefano Martiniani at the University of Cambridge.
+PyCG_DESCENT has been authored by Stefano Martiniani and Jacob Stevenson at the University of Cambridge.
 The project is publicly available under the GNU general public licence.
-
    
 Reference
 ---------
@@ -45,8 +40,6 @@ Reference
    :maxdepth: 2
 	
    CGDescent
-
-* `C++ Class Index <./doxygen/namespacePyCG_DESCENT.html>`_
 
 Indices and tables
 ------------------
