@@ -1,1 +1,0 @@
-/usr/bin/g++  -fPIC -std=c++0x -Wall -Wextra -pedantic -O3   -shared -Wl,-soname,_pycgd.so -o _pycgd.so CMakeFiles/_pycgd.dir/PyCG_DESCENT/_pycgd.cxx.o libPyCG_DESCENT_lib.so -Wl,-rpath,/home/stefano/Work/PyCG_DESCENT/build/cmake 

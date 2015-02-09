@@ -1,2 +1,0 @@
-/home/stefano/Work/PyCG_DESCENT/build/cmake/CMakeFiles/PyCG_DESCENT_lib.dir
-/home/stefano/Work/PyCG_DESCENT/build/cmake/CMakeFiles/_pycgd.dir
