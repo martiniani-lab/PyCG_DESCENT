@@ -119,7 +119,7 @@ class ModuleList:
 
 setup(name='PyCG_DESCENT', 
       version='0.1',
-      author='Stefano Martiniani', 
+      author='Stefano Martiniani and Jacob Stevenson', 
       description="PyCG_DESCENT is a Python wrapper for the CG_DESCENT algorithm by William W. Hager and Hongchao Zang",
       url='https://github.com/smcantab/PyCG_DESCENT',
       packages=["PyCG_DESCENT",

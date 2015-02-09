@@ -68,9 +68,9 @@
       4. W. W. Hager and H. Zhang, Limited memory conjugate gradients,
          www.math.ufl.edu/~hager/papers/CG/lcg.pdf */
 
-#include "PyCG_DESCENT/cg_user.h"
-#include "PyCG_DESCENT/cg_descent.h"
-#include "PyCG_DESCENT/cg_blas.h"
+#include "cg_user.h"
+#include "cg_descent.h"
+#include "cg_blas.h"
 
 /* begin external variables */
 double one [1], zero [1] ;

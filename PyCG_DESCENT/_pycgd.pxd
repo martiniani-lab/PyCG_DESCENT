@@ -3,7 +3,7 @@ from pele.potentials._pele cimport shared_ptr
 from libcpp cimport bool as cbool
 cimport numpy as np
 
-cdef extern from "PyCG_DESCENT/cg_descent_wrapper.h" namespace "pycgd":
+cdef extern from "PyCG_DESCENT/cg_descent_wrapper.hpp" namespace "pycgd":
     cdef cppclass  cCGDescent "pycgd::cg_descent":
         cCGDescent(shared_ptr[_pele.cBasePotential], _pele.Array[double], double, size_t) except +
         void run(int) except+

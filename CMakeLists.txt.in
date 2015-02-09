@@ -22,11 +22,12 @@ SET(CMAKE_CXX_FLAGS __COMPILER_EXTRA_ARGS__)
 # set the PyCG_DESCENT include directory
 set(PyCG_DESCENT_include ${CMAKE_SOURCE_DIR}/source)
 include_directories(${PyCG_DESCENT_include})
+include_directories(${PyCG_DESCENT_include}/CG_DESCENT6.7)
 message("PyCG_DESCENT include directory: ${PyCG_DESCENT_include}")
 
 # build the PyCG_DESCENT library
 FILE(GLOB pele_sources ${pele_include}/*.cpp)
-FILE(GLOB PyCG_DESCENT_sources ${PyCG_DESCENT_include}/*.c*)
+FILE(GLOB PyCG_DESCENT_sources ${PyCG_DESCENT_include}/CG_DESCENT6.7/*.c*)
 add_library(PyCG_DESCENT_lib SHARED ${PyCG_DESCENT_sources} ${pele_sources})
 
 function(make_cython_lib cython_cxx_source)
