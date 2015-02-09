@@ -13,10 +13,6 @@
    START parameters should be specified to determine when to start
    using the BLAS. */
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #define NOBLAS
 
 /* if BLAS are used, specify the integer precision */
@@ -86,9 +82,5 @@ void CG_DCOPY (BLAS_INT *n, double *DX, BLAS_INT *incx, double *DY,
         BLAS_INT *incy) ;
 
 BLAS_INT CG_IDAMAX (BLAS_INT *n, double *DX, BLAS_INT *incx) ;
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

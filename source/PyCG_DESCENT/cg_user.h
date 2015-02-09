@@ -1,10 +1,6 @@
 #ifndef _CGD_USER_H__
 #define _CGD_USER_H__
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
 #include <limits.h>
 #include <float.h>
 #include <string.h>
@@ -238,9 +234,5 @@ void cg_default /* set default parameter values */
 (
     cg_parameter   *Parm
 ) ;
-
-#ifdef __cplusplus
-}
-#endif
 
 #endif

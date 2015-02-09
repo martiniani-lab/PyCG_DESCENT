@@ -6,7 +6,9 @@
 #include "pele/array.h"
 #include "pele/base_potential.h"
 #include "pele/optimizer.h"
+extern "C" {
 #include "cg_user.h"
+}
 
 /* entries in cg_descent
  * cg_descent (x, n, NULL, NULL, grad_tol, user_value, user_gradient, user_value_gradient, NULL) ;
