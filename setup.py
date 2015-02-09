@@ -55,14 +55,19 @@ setup(name='PyCG_DESCENT',
 # build the c++ files
 #
 
-include_sources_py_cgdescent = ["source/" + f for f in os.listdir("source/")
+include_sources_py_cgdescent = ["source/" + f for f in os.listdir("source")
                    if f.endswith(".cpp") or f.endswith(".c")]
-include_dirs = [numpy_include, "source"]
+include_sources_py_cgdescent += ["source/CG_DESCENT6.7/" + f for f in os.listdir("source/CG_DESCENT6.7/")
+                   if f.endswith(".cpp") or f.endswith(".c")]
+
+include_dirs = [numpy_include, "source", "source/CG_DESCENT6.7/"]
 
 include_sources_pele = [pelepath+"/source/" + f for f in os.listdir(pelepath+"/source") 
                    if f.endswith(".cpp")]
 
-depends_py_cgdescent = [os.path.join("source/PyCG_DESCENT", f) for f in os.listdir("source/PyCG_DESCENT/")
+depends_py_cgdescent = [os.path.join("source/CG_DESCENT6.7", f) for f in os.listdir("source/CG_DESCENT6.7/")
+           if f.endswith(".cpp") or f.endswith(".c") or f.endswith(".h") or f.endswith(".hpp")]
+depends_py_cgdescent += [os.path.join("source/PyCG_DESCENT", f) for f in os.listdir("source/PyCG_DESCENT/")
            if f.endswith(".cpp") or f.endswith(".c") or f.endswith(".h") or f.endswith(".hpp")]
 
 depends_pele = [os.path.join(pelepath+"/source/pele", f) for f in os.listdir(pelepath+"/source/pele") 
