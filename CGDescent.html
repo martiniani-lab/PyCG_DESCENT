@@ -1,0 +1,976 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+  "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+  <head>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    
+    <title>PyCG_Descent &mdash; PyCG_DESCENT 1.0.0 documentation</title>
+    
+    <link rel="stylesheet" href="_static/scipy.css" type="text/css" />
+    <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+    
+    <script type="text/javascript">
+      var DOCUMENTATION_OPTIONS = {
+        URL_ROOT:    './',
+        VERSION:     '1.0.0',
+        COLLAPSE_INDEX: false,
+        FILE_SUFFIX: '.html',
+        HAS_SOURCE:  false
+      };
+    </script>
+    <script type="text/javascript" src="_static/jquery.js"></script>
+    <script type="text/javascript" src="_static/underscore.js"></script>
+    <script type="text/javascript" src="_static/doctools.js"></script>
+    <script type="text/javascript" src="http://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script>
+    <link rel="top" title="PyCG_DESCENT 1.0.0 documentation" href="index.html" />
+    <link rel="prev" title="PyCG_DESCENT : Python Conjugate Gradient Descent" href="index.html" /> 
+  </head>
+  <body>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             accesskey="I">index</a></li>
+        <li class="right" >
+          <a href="index.html" title="PyCG_DESCENT : Python Conjugate Gradient Descent"
+             accesskey="P">previous</a> |</li>
+        <li><a href="index.html">PyCG_DESCENT 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>  
+
+    <div class="document">
+      <div class="documentwrapper">
+        <div class="bodywrapper">
+          <div class="body">
+            
+  <div class="section" id="pycg-descent">
+<h1>PyCG_Descent<a class="headerlink" href="#pycg-descent" title="Permalink to this headline">¶</a></h1>
+<dl class="class">
+<dt id="PyCG_DESCENT.CGDescent">
+<em class="property">class </em><tt class="descclassname">PyCG_DESCENT.</tt><tt class="descname">CGDescent</tt><a class="headerlink" href="#PyCG_DESCENT.CGDescent" title="Permalink to this definition">¶</a></dt>
+<dd><p>Bases: <tt class="xref py py-class docutils literal"><span class="pre">PyCG_DESCENT._pycgd._Cdef_CGDescent</span></tt></p>
+<p>Python interface for c++ CG_DESCENT cpp/cython wrapper</p>
+<p>This class wraps the CG_DESCENT c++ wrapper into a cython class
+for use in Python. This version of the wrapper relies on the
+<cite>pele &lt;pele:pele&gt;</cite> library.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><p class="first"><strong>x0</strong> : numpy.array</p>
+<blockquote>
+<div><p>these are the initial coordinates for the system</p>
+</div></blockquote>
+<p><strong>potential</strong> : <a class="reference external" href="https://pele-python.github.io/pele/generated/pele.potentials.BasePotential.html#pele.potentials.BasePotential" title="(in pele v0.1)"><tt class="xref py py-class docutils literal"><span class="pre">BasePotential</span></tt></a></p>
+<blockquote>
+<div><p>the potential (or cost function) return energy, gradient and hessian
+information given a set of coordinates</p>
+</div></blockquote>
+<p><strong>M</strong> : int</p>
+<blockquote>
+<div><p>number of vectors stored in memory. M=0 corresponds to the standard
+CG_DESCENT method, while M&gt;0 corresponds to the (preconditioned)
+Limited Memory version of the algorithm</p>
+</div></blockquote>
+<p><strong>tol: double</strong></p>
+<blockquote>
+<div><p>minimisation is terminated when the L^infty-Norm of the gradient is less
+than tol</p>
+</div></blockquote>
+<p><strong>nsteps</strong> : int</p>
+<blockquote>
+<div><p>maximum number of iterations</p>
+</div></blockquote>
+<p><strong>print_level: int 0 to 3</strong></p>
+<blockquote>
+<div><p>CG_DESCENT verbosity:
+0 no output
+1 to 3 different amount of details about stepping and line search</p>
+</div></blockquote>
+<p><strong>verbosity: int</strong></p>
+<blockquote class="last">
+<div><p>level of verbosity for <cite>potential &lt;pele:pele.potentials.BasePotential&gt;</cite></p>
+</div></blockquote>
+</td>
+</tr>
+</tbody>
+</table>
+<p class="rubric">Attributes</p>
+<table border="1" class="docutils">
+<colgroup>
+<col width="5%" />
+<col width="95%" />
+</colgroup>
+<tbody valign="top">
+<tr class="row-odd"><td>potential</td>
+<td>(<a class="reference external" href="https://pele-python.github.io/pele/generated/pele.potentials.BasePotential.html#pele.potentials.BasePotential" title="(in pele v0.1)"><tt class="xref py py-class docutils literal"><span class="pre">BasePotential</span></tt></a>) the potential (or cost function) return energy, gradient and hessian information given a set of coordinates</td>
+</tr>
+</tbody>
+</table>
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.get_iter">
+<tt class="descname">get_iter</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.get_iter" title="Permalink to this definition">¶</a></dt>
+<dd><p>get number of iterattions
+:return: int</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.get_result">
+<tt class="descname">get_result</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.get_result" title="Permalink to this definition">¶</a></dt>
+<dd><p>return a results object
+:return: <cite>Result &lt;pele:pele.optimize.result&gt;</cite> container</p>
+<blockquote>
+<div><a href="#id1"><span class="problematic" id="id2">*</span></a>res.energy : function value
+<a href="#id3"><span class="problematic" id="id4">*</span></a>res.coords : final coordinates
+<a href="#id5"><span class="problematic" id="id6">*</span></a>res.grad : gradient vector
+<a href="#id7"><span class="problematic" id="id8">*</span></a>res.gnorm : L^infy-norm of gradient vector
+<a href="#id9"><span class="problematic" id="id10">*</span></a>res.rms : root mean square of gradient vector
+<a href="#id11"><span class="problematic" id="id12">*</span></a>res.nsteps : number of steps
+<a href="#id13"><span class="problematic" id="id14">*</span></a>res.itersub : number of iterations in subspace
+<a href="#id15"><span class="problematic" id="id16">*</span></a>res.numsub :
+<a href="#id17"><span class="problematic" id="id18">*</span></a>res.nfunc
+<a href="#id19"><span class="problematic" id="id20">*</span></a>res.ngrad
+<a href="#id21"><span class="problematic" id="id22">*</span></a>res.nfev
+<a href="#id23"><span class="problematic" id="id24">*</span></a>res.success</div></blockquote>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.reset">
+<tt class="descname">reset</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.reset" title="Permalink to this definition">¶</a></dt>
+<dd><p>reset coordinates to a new state for a new run</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>coords</strong> &#8211; new coordinates</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.run">
+<tt class="descname">run</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.run" title="Permalink to this definition">¶</a></dt>
+<dd><p>run CG_DESCENT
+:param niter: maximum number of iterations
+:return: <cite>Result &lt;pele:pele.optimize.result&gt;</cite> container</p>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_adaptive_beta">
+<tt class="descname">set_adaptive_beta</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_adaptive_beta" title="Permalink to this definition">¶</a></dt>
+<dd><p>set True to choose beta adaptively</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; bool</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_approx_wolfe">
+<tt class="descname">set_approx_wolfe</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_approx_wolfe" title="Permalink to this definition">¶</a></dt>
+<dd><p>set True to use approximate Wolfe line search
+if False use ordinary Wolfe line search, switch to approximate Wolfe when
+<a href="#id25"><span class="problematic" id="id26">|f_k+1-f_k|</span></a> &lt; AWolfeFac*C_k, C_k = average size of cost</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val</strong> &#8211; bool</li>
+<li><strong>factor</strong> &#8211; double</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">void</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_beta_lower">
+<tt class="descname">set_beta_lower</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_beta_lower" title="Permalink to this definition">¶</a></dt>
+<dd><p>set lower bound factor for beta</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_debug">
+<tt class="descname">set_debug</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_debug" title="Permalink to this definition">¶</a></dt>
+<dd><p>set True to check that f_k+1 - f_k &lt;= debugtol*C_k
+otherwise don&#8217;t check function values</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val</strong> &#8211; bool</li>
+<li><strong>tol</strong> &#8211; double</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">void</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_delta">
+<tt class="descname">set_delta</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_delta" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wolfe line search parameter</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_egrow">
+<tt class="descname">set_egrow</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_egrow" title="Permalink to this definition">¶</a></dt>
+<dd><p>factor by which eps grows when line search fails during contraction</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_eta0">
+<tt class="descname">set_eta0</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_eta0" title="Permalink to this definition">¶</a></dt>
+<dd><p>when relative distance from current gradient to subspace &lt;= eta0,
+enter subspace if subspace dimension = mem</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_eta1">
+<tt class="descname">set_eta1</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_eta1" title="Permalink to this definition">¶</a></dt>
+<dd><p>when relative distance from current gradient to subspace &gt;= eta1,
+leave subspace</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_eta2">
+<tt class="descname">set_eta2</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_eta2" title="Permalink to this definition">¶</a></dt>
+<dd><p>when relative distance from current direction to subspace &lt;= eta2,
+always enter subspace (invariant space)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_expand_safe">
+<tt class="descname">set_expand_safe</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_expand_safe" title="Permalink to this definition">¶</a></dt>
+<dd><p>maximum factor secant step increases stepsize in expansion phase</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_feps">
+<tt class="descname">set_feps</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_feps" title="Permalink to this definition">¶</a></dt>
+<dd><p>stop when -alpha*dphi0 (estimated change in function value) &lt;= feps*|f|</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_gamma">
+<tt class="descname">set_gamma</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_gamma" title="Permalink to this definition">¶</a></dt>
+<dd><p>decay factor for bracket interval width</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_lbfgs">
+<tt class="descname">set_lbfgs</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_lbfgs" title="Permalink to this definition">¶</a></dt>
+<dd><p>set True to use LBFGS</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; bool</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_maxiter">
+<tt class="descname">set_maxiter</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_maxiter" title="Permalink to this definition">¶</a></dt>
+<dd><p>abort cg after maxiter iterations</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; int</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_memory">
+<tt class="descname">set_memory</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_memory" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of vectors stored in memory</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; int</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_nan_decay">
+<tt class="descname">set_nan_decay</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_nan_decay" title="Permalink to this definition">¶</a></dt>
+<dd><p>after encountering nan, decay factor for stepsize</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_nan_rho">
+<tt class="descname">set_nan_rho</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_nan_rho" title="Permalink to this definition">¶</a></dt>
+<dd><p>after encountering nan, growth factor when searching for a bracketing interval</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_neps">
+<tt class="descname">set_neps</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_neps" title="Permalink to this definition">¶</a></dt>
+<dd><p>maximum number of times that eps is updated</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; int</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_nline">
+<tt class="descname">set_nline</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_nline" title="Permalink to this definition">¶</a></dt>
+<dd><p>maximum number of iterations in line search</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; int</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_nshrink">
+<tt class="descname">set_nshrink</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_nshrink" title="Permalink to this definition">¶</a></dt>
+<dd><p>maximum number of times the bracketing interval shrinks</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; int</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_nslow">
+<tt class="descname">set_nslow</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_nslow" title="Permalink to this definition">¶</a></dt>
+<dd><p>terminate after nslow iterations without strict improvement in either function value or gradient</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; int</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_ntries">
+<tt class="descname">set_ntries</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_ntries" title="Permalink to this definition">¶</a></dt>
+<dd><p>maximum number of times the bracketing interval grows during expansion</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; int</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_pert_rule">
+<tt class="descname">set_pert_rule</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_pert_rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>if True estimated error in function value is eps*Ck
+otherwise estimated error in function value is eps</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val</strong> &#8211; bool</li>
+<li><strong>eps</strong> &#8211; double
+error in function value</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">void</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_print_level">
+<tt class="descname">set_print_level</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_print_level" title="Permalink to this definition">¶</a></dt>
+<dd><p>Level 0 = no printing, ... , Level 3 = maximum printing</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; int</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_psi0">
+<tt class="descname">set_psi0</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_psi0" title="Permalink to this definition">¶</a></dt>
+<dd><p>factor used in starting guess for iteration 1</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_psi1">
+<tt class="descname">set_psi1</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_psi1" title="Permalink to this definition">¶</a></dt>
+<dd><p>for approximate quadratic, use gradient at psi1*psi2*previous step
+for initial stepsize</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_psi2">
+<tt class="descname">set_psi2</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_psi2" title="Permalink to this definition">¶</a></dt>
+<dd><p>when starting a new cg iteration, our initial guess for the line search
+stepsize is psi2*previous step</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_psi_bounds">
+<tt class="descname">set_psi_bounds</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_psi_bounds" title="Permalink to this definition">¶</a></dt>
+<dd><p>in performing a QuadStep, we evaluate at point betweeen
+[psi_lo, psi_hi]*psi2*previous step</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>low</strong> &#8211; double</li>
+<li><strong>high</strong> &#8211; double</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">void</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_qdecay">
+<tt class="descname">set_qdecay</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_qdecay" title="Permalink to this definition">¶</a></dt>
+<dd><p>factor in [0, 1] used to compute average cost magnitude C_k as follows:
+Q_k = 1 + (Qdecay)Q_k-1, Q_0 = 0,  C_k = C_k-1 + (<a href="#id27"><span class="problematic" id="id28">|f_k|</span></a> - C_k-1)/Q_k</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_qeps">
+<tt class="descname">set_qeps</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_qeps" title="Permalink to this definition">¶</a></dt>
+<dd><p>parameter in cost error for quadratic restart criterion</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_qrestart">
+<tt class="descname">set_qrestart</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_qrestart" title="Permalink to this definition">¶</a></dt>
+<dd><p>number of iterations the function should be nearly quadratic before a restart</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; int</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_qrule">
+<tt class="descname">set_qrule</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_qrule" title="Permalink to this definition">¶</a></dt>
+<dd><p>parameter used to decide if cost is quadratic</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_quad_step">
+<tt class="descname">set_quad_step</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_quad_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>set true to attempt quadratic interpolation in line search when
+<a href="#id29"><span class="problematic" id="id30">|f_k+1 - f_k|</span></a>/f_k &lt;= QuadCutoff</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val</strong> &#8211; bool</li>
+<li><strong>cutoff</strong> &#8211; double</li>
+<li><strong>quadsafe</strong> &#8211; double
+maximum factor by which a quad step can reduce the step size</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">void</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_restart_factor">
+<tt class="descname">set_restart_factor</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_restart_factor" title="Permalink to this definition">¶</a></dt>
+<dd><p>conjugate gradient method restarts after (n*restart_fac) iterations</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_rho">
+<tt class="descname">set_rho</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_rho" title="Permalink to this definition">¶</a></dt>
+<dd><p>growth factor when searching for initial bracketing interval</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_rho_grow">
+<tt class="descname">set_rho_grow</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_rho_grow" title="Permalink to this definition">¶</a></dt>
+<dd><p>factor by which rho grows during expansion phase where minimizer is bracketed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_secant_amplification">
+<tt class="descname">set_secant_amplification</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_secant_amplification" title="Permalink to this definition">¶</a></dt>
+<dd><p>factor by which secant step is amplified during expansion phase
+where minimizer is bracketed</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_sigma">
+<tt class="descname">set_sigma</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_sigma" title="Permalink to this definition">¶</a></dt>
+<dd><p>Wolfe line search parameter</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_small_cost">
+<tt class="descname">set_small_cost</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_small_cost" title="Permalink to this definition">¶</a></dt>
+<dd><p>when <a href="#id31"><span class="problematic" id="id32">|f|</span></a> &lt; SmallCost*starting cost then skip QuadStep and set PertRule = False</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_step">
+<tt class="descname">set_step</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_step" title="Permalink to this definition">¶</a></dt>
+<dd><p>if step is nonzero, it is the initial step of the initial line search</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_stop_rule">
+<tt class="descname">set_stop_rule</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_stop_rule" title="Permalink to this definition">¶</a></dt>
+<dd><p>set True to stop when ||proj_grad||_infty &lt;= max(grad_tol,initial ||grad||_infty*StopFact)
+if False then stop when ||proj_grad||_infty &lt;= grad_tol*(1 + <a href="#id33"><span class="problematic" id="id34">|f_k|</span></a>)</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val</strong> &#8211; bool</li>
+<li><strong>factor</strong> &#8211; double</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">void</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_subspace_check">
+<tt class="descname">set_subspace_check</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_subspace_check" title="Permalink to this definition">¶</a></dt>
+<dd><p>controls the frequency with which the subspace condition is checked.</p>
+<p>It is checked for SubCheck*mem iterations and if not satisfied,
+then it is skipped for Subskip*mem iterations and Subskip is doubled.
+Whenever the subspace condition is statisfied, SubSkip is returned to
+its original value.</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>check_freq</strong> &#8211; int</li>
+<li><strong>skip</strong> &#8211; int</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">void</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_theta">
+<tt class="descname">set_theta</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_theta" title="Permalink to this definition">¶</a></dt>
+<dd><p>parameter describing the cg_descent family</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><strong>val</strong> &#8211; double</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body">void</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+<dl class="method">
+<dt id="PyCG_DESCENT.CGDescent.set_use_cubic">
+<tt class="descname">set_use_cubic</tt><big>(</big><big>)</big><a class="headerlink" href="#PyCG_DESCENT.CGDescent.set_use_cubic" title="Permalink to this definition">¶</a></dt>
+<dd><p>set True to use cubic step when <a href="#id35"><span class="problematic" id="id36">|f_k+1 - f_k|</span></a>/<a href="#id37"><span class="problematic" id="id38">|f_k|</span></a> &gt; CubicCutOff</p>
+<table class="docutils field-list" frame="void" rules="none">
+<col class="field-name" />
+<col class="field-body" />
+<tbody valign="top">
+<tr class="field-odd field"><th class="field-name">Parameters:</th><td class="field-body"><ul class="first simple">
+<li><strong>val</strong> &#8211; bool</li>
+<li><strong>cutoff</strong> &#8211; double</li>
+</ul>
+</td>
+</tr>
+<tr class="field-even field"><th class="field-name">Returns:</th><td class="field-body"><p class="first last">void</p>
+</td>
+</tr>
+</tbody>
+</table>
+</dd></dl>
+
+</dd></dl>
+
+</div>
+
+
+          </div>
+        </div>
+      </div>
+      <div class="sphinxsidebar">
+        <div class="sphinxsidebarwrapper">
+  <h4>Previous topic</h4>
+  <p class="topless"><a href="index.html"
+                        title="previous chapter">PyCG_DESCENT : Python Conjugate Gradient Descent</a></p>
+<div id="searchbox" style="display: none">
+  <h3>Quick search</h3>
+    <form class="search" action="search.html" method="get">
+      <input type="text" name="q" />
+      <input type="submit" value="Go" />
+      <input type="hidden" name="check_keywords" value="yes" />
+      <input type="hidden" name="area" value="default" />
+    </form>
+    <p class="searchtip" style="font-size: 90%">
+    Enter search terms or a module, class or function name.
+    </p>
+</div>
+<script type="text/javascript">$('#searchbox').show(0);</script>
+        </div>
+      </div>
+      <div class="clearer"></div>
+    </div>
+    <div class="related">
+      <h3>Navigation</h3>
+      <ul>
+        <li class="right" style="margin-right: 10px">
+          <a href="genindex.html" title="General Index"
+             >index</a></li>
+        <li class="right" >
+          <a href="index.html" title="PyCG_DESCENT : Python Conjugate Gradient Descent"
+             >previous</a> |</li>
+        <li><a href="index.html">PyCG_DESCENT 1.0.0 documentation</a> &raquo;</li> 
+      </ul>
+    </div>
+    <div class="footer">
+        &copy; Copyright 2015, Stefano Martiniani.
+      Created using <a href="http://sphinx-doc.org/">Sphinx</a> 1.2.3.
+    </div>
+  </body>
+</html>
