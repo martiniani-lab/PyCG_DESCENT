@@ -1,4 +1,4 @@
-PyCG_DESCENT
+PyCG_Descent
 =============
 
 .. currentmodule:: PyCG_DESCENT
