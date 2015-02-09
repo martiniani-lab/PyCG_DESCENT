@@ -7,6 +7,10 @@
 PyCG_DESCENT : Python Conjugate Gradient Descent
 ++++++++++++++++++++++++++++++++++++++++++++++++
 
+Source code: https://github.com/smcantab/PyCG_DESCENT
+
+Documentation: http://smcantab.github.io/PyCG_DESCENT/
+
 Python wrapper for the Hager and Zang CG_DESCENT algorithm.
 CG_DESCENT is a conjugate gradient algorithm for solving an unconstrained minimization
 problem of the form::
