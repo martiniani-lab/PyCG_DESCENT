@@ -52,11 +52,13 @@ inline double pycgd_value_gradient(double* g, double* x, INT n){
     return glob_pot->get_energy_gradient(xarray, garray);
 }
 
+inline int pycgd_test_callback(double f, double* x, double* g, INT n, void* user_data);
+
 }
 
 namespace pycgd{
 
-class cg_descent{
+class CGDescent{
 protected:
     std::shared_ptr<pele::BasePotential> m_pot;
     cg_parameter m_parm;
@@ -66,7 +68,7 @@ protected:
     size_t m_nfev;
     bool m_success;
 public:
-    cg_descent(std::shared_ptr<pele::BasePotential> potential, const pele::Array<double> x0, double tol=1e-4,  size_t PrintLevel=0):
+    CGDescent(std::shared_ptr<pele::BasePotential> potential, const pele::Array<double> x0, double tol=1e-4,  size_t PrintLevel=0):
         m_pot(potential),
         m_parm(),
         m_stats(),
@@ -87,7 +89,11 @@ public:
         m_parm.psi2 = 10.0;
     };
 
-    ~cg_descent(){}
+    virtual ~CGDescent(){}
+
+    virtual bool test_convergence(double energy, pele::Array<double> x, pele::Array<double> g){
+        return false;
+    };
 
     //run
     inline void run(){
@@ -97,7 +103,8 @@ public:
         m_success = false;
 
         //using ::cg_descent call in the global namespace (the one in CG_DESCENT 6.7), this resolves the ambiguity
-        INT cgout = ::cg_descent(m_x.data(), m_x.size(), &m_stats, &m_parm, m_tol, pycgd_value, pycgd_gradient, pycgd_value_gradient, NULL);
+        INT cgout = ::cg_descent(m_x.data(), m_x.size(), &m_stats, &m_parm, m_tol, pycgd_value,
+                pycgd_gradient, pycgd_value_gradient, NULL, pycgd_test_callback, (void*) this);
         m_success = this->test_success(cgout);
         m_nfev = glob_nfev;
 
@@ -341,4 +348,17 @@ protected:
 };
 
 }
+
+namespace {
+
+inline int pycgd_test_callback(double f, double* x, double* g, INT n, void* user_data){
+
+    pycgd::CGDescent * cgd = static_cast<pycgd::CGDescent*>(user_data);
+    pele::Array<double> xarray(x, (size_t) n);
+    pele::Array<double> garray(g, (size_t) n);
+    return (int) cgd->test_convergence(f, xarray, garray);
+}
+
+}
+
 #endif

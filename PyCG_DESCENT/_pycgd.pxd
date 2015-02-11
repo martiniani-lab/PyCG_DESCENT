@@ -4,7 +4,7 @@ from libcpp cimport bool as cbool
 cimport numpy as np
 
 cdef extern from "PyCG_DESCENT/cg_descent_wrapper.hpp" namespace "pycgd":
-    cdef cppclass  cCGDescent "pycgd::cg_descent":
+    cdef cppclass  cCGDescent "pycgd::CGDescent":
         cCGDescent(shared_ptr[_pele.cBasePotential], _pele.Array[double], double, size_t) except +
         void run(int) except+
         void run() except+

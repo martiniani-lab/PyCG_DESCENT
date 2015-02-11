@@ -104,13 +104,15 @@ int cg_descent /*  return status of solution process:
     void         (*grad) (double *, double *, INT), /* grad (g, x, n) */
     double    (*valgrad) (double *, double *, INT), /* f = valgrad (g, x, n),
                           NULL = compute value & gradient using value & grad */
-    double         *Work  /* NULL => let code allocate memory
+    double         *Work,  /* NULL => let code allocate memory
                              not NULL => use array Work for required memory
                              The amount of memory needed depends on the value
                              of the parameter memory in the Parm structure.
                              memory > 0 => need (mem+6)*n + (3*mem+9)*mem + 5
                                            where mem = MIN(memory, n)
                              memory = 0 => need 4*n */
+    int         (*user_test) (double, double *, double *, INT, void *),
+    void*       user_data
 )
 {
     INT     i, iter, IterRestart, maxit, n5, nrestart, nrestartsub ;
@@ -1456,6 +1458,11 @@ int cg_descent /*  return status of solution process:
         {
            status = 5 ;
            goto Exit ;
+        }
+
+        if ( (*user_test)(f, x, g, n, user_data)){
+            status = 0;
+            goto Exit;
         }
     }
     status = 2 ;
