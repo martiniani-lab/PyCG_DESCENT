@@ -291,7 +291,20 @@ cdef class _Cdef_CGDescent(object):
         self.thisptr.get().set_StopRule(val)
         if factor is not None:
             self.thisptr.get().set_StopFac(factor)
+    
+    def set_tol(self, val):
+        """reset gradient tolerance for termination
 
+        Parameters
+        ----------
+        val: double
+        
+        Returns
+        -------
+        res: void
+        """
+        self.thisptr.get().set_tol(val)
+    
     def set_subspace_check(self, check_freq, skip=None):
         """controls the frequency with which the subspace condition is checked.
 
@@ -749,6 +762,7 @@ cdef class _Cdef_CGDescent(object):
         res: void
         """
         self.thisptr.get().set_qrestart(val)
+        
 
 class CGDescent(_Cdef_CGDescent):
     """Python interface for c++ CG_DESCENT cpp/cython wrapper

@@ -63,6 +63,7 @@ cdef extern from "PyCG_DESCENT/cg_descent_wrapper.hpp" namespace "pycgd":
         void set_qeps(double) except+
         void set_qrule(double) except+
         void set_qrestart(int) except+
+        void set_tol(double) except+
         double get_f() except+
         double get_gnorm() except+
         size_t get_iter() except+
@@ -72,6 +73,7 @@ cdef extern from "PyCG_DESCENT/cg_descent_wrapper.hpp" namespace "pycgd":
         size_t get_ngrad() except+
         size_t get_nfev() except+
         double get_rms() except+
+        double get_tol() except+
         _pele.Array[double] get_x() except+
         _pele.Array[double] get_g() except+
         cbool success() except+
