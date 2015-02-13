@@ -7,7 +7,7 @@
 #include "pele/base_potential.h"
 #include "pele/optimizer.h"
 extern "C" {
-#include "cg_user.h"
+#include "../CG_DESCENT6.7/cg_user.h"
 }
 
 /* entries in cg_descent
