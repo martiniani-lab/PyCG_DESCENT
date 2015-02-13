@@ -123,8 +123,8 @@ public:
         }
 
     /*============================================================================
-      parameters that the user may wish to modify
-  ----------------------------------------------------------------------------*/
+      CG_DESCENT6.7 parameters that the user may wish to modify
+     ----------------------------------------------------------------------------*/
     /* Level 0 = no printing, ... , Level 3 = maximum printing */
     inline void set_PrintLevel(int val){ m_parm.PrintLevel = val; }
     /* abort cg after maxit iterations */
@@ -223,7 +223,7 @@ public:
     inline void set_nan_decay(double val){m_parm.nan_decay = val;}
 
     /*============================================================================
-       technical parameters which the user probably should not touch
+       CG_DESCENT6.7 technical parameters which the user probably should not touch
   ----------------------------------------------------------------------------*/
     /* Wolfe line search parameter */
     inline void set_delta(double val){m_parm.delta = val;}
@@ -294,6 +294,8 @@ public:
         pele::Array<double> g = this->get_g();
         return norm(g)/sqrt(m_x.size());
     };
+    inline void set_tol(double val){ m_tol = val; }
+    inline double get_tol(double val){ return m_tol; }
 
 protected:
     inline bool test_success(INT cgout){
