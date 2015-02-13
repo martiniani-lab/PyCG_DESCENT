@@ -295,7 +295,7 @@ public:
         return norm(g)/sqrt(m_x.size());
     };
     inline void set_tol(double val){ m_tol = val; }
-    inline double get_tol(double val){ return m_tol; }
+    inline double get_tol(){ return m_tol; }
 
 protected:
     inline bool test_success(INT cgout){
