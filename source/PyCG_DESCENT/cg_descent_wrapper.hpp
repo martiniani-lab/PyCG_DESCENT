@@ -340,6 +340,12 @@ protected:
             case 10:
                 std::cout<<"out of memory"<<std::endl;
                 break;
+            case 11:
+                std::cout<<"function nan or +-INF and could not be repaired"<<std::endl;
+                break;
+            case 12:
+                std::cout<<"invalid choice for memory parameter"<<std::endl;
+                break;
             default:
                 std::cout<<"failed, value not known"<<std::endl;
                 break;
