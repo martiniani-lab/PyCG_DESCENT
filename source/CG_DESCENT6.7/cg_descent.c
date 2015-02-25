@@ -129,14 +129,14 @@ int cg_descent /*  return status of solution process:
             UseMemory, Restart, LBFGS, InvariantSpace, IterSub, NumSub,
             IterSubStart, IterSubRestart, FirstFull, SubSkip, SubCheck,
             StartSkip, StartCheck, DenseCol1, NegDiag, memk_is_mem,
-           d0isg, qrestart ;
+            d0isg, qrestart ;
     double  gHg, scale, gsubnorm2,  ratio, stgkeep,
             alphaold, zeta, yty, ytg, t1, t2, t3, t4,
            *Rk, *Re, *Sk, *SkF, *stemp, *Yk, *SkYk,
            *dsub, *gsub, *gsubtemp, *gkeep, *tau, *vsub, *wsub ;
 
     cg_parameter *Parm, ParmStruc ;
-    cg_com Com ;
+    cg_com Com ; /*this struct is not initialised, this is a very bad idea. 1 bug found and fixed below*/
 
     /* assign values to the external variables */
     one [0] = (double) 1 ;
@@ -201,6 +201,9 @@ int cg_descent /*  return status of solution process:
     Com.d = d = xtemp+n ;
     Com.g = g = d+n ;
     Com.gtemp = gtemp = g+n ;
+    Com.df = 0;
+    Com.df0 = 0;
+    Com.f = 0;
     Com.n = n ;          /* problem dimension */
     Com.neps = 0 ;       /* number of times eps updated */
     Com.AWolfe = Parm->AWolfe ; /* do not touch user's AWolfe */
@@ -273,11 +276,15 @@ int cg_descent /*  return status of solution process:
 
     /* initial function and gradient evaluations, initial direction */
     Com.alpha = ZERO ;
+
     status = cg_evaluate ("fg", "n", &Com) ;
     f = Com.f ;
     if ( status )
     {
         if ( PrintLevel > 0 ) printf ("Function undefined at starting point\n");
+        printf("stefano: line 281");
+        printf("stefano: fvalue %e", f);
+
         goto Exit ;
     }
         
@@ -294,6 +301,7 @@ int cg_descent /*  return status of solution process:
     if ( f != f )
     {
         status = 11 ;
+        printf("stefano: line 298");
         goto Exit ;
     }
 
@@ -360,7 +368,10 @@ int cg_descent /*  return status of solution process:
                 {
                     Com.alpha = Parm->psi1*alpha ;
                     status = cg_evaluate ("g", "y", &Com) ;
-                    if ( status ) goto Exit ;
+                    if ( status ) {
+                        printf("stefano: line 366");
+                        goto Exit ;
+                    }
                     if ( Com.df > dphi0 )
                     {
                         alpha = -dphi0/((Com.df-dphi0)/Com.alpha) ;
@@ -390,7 +401,10 @@ int cg_descent /*  return status of solution process:
                     t = MAX (Parm->psi_lo, Com.df0/(dphi0*Parm->psi2)) ;
                     Com.alpha = MIN (t, Parm->psi_hi)*alpha ;
                     status = cg_evaluate ("f", "y", &Com) ;
-                    if ( status ) goto Exit ;
+                    if ( status ) {
+                        printf("stefano: line 399");
+                        goto Exit ;
+                    }
                     ftemp = Com.f ;
                     denom = 2.*(((ftemp-f)/Com.alpha)-dphi0) ;
                     if ( denom > ZERO )
@@ -459,7 +473,10 @@ int cg_descent /*  return status of solution process:
         f = Com.f ;
         dphi = Com.df ;
 
-        if ( status ) goto Exit ;
+        if ( status ) {
+            printf("stefano: line 471");
+            goto Exit ;
+        }
 
         /* Test for convergence to within machine epsilon
            [set feps to zero to remove this test] */
@@ -1467,7 +1484,10 @@ int cg_descent /*  return status of solution process:
     }
     status = 2 ;
 Exit:
-    if ( status == 11 ) gnorm = INF ; /* function is undefined */
+    if ( status == 11 ) {
+        printf("stefano: line 1482");
+        gnorm = INF ; /* function is undefined */
+    }
     if ( Stat != NULL )
     {
         Stat->nfunc = Com.nf ;
@@ -1732,7 +1752,10 @@ PRIVATE int cg_line
         status = cg_evaluate ("g", "y", Com) ;
         qb = FALSE ;
     }
-    if ( status ) return (status) ; /* function is undefined */
+    if ( status ) {
+        printf("stefano: line 1747");
+        return (status) ; /* function is undefined */
+    }
     b = Com->alpha ;
 
     if ( AWolfe )
@@ -1779,7 +1802,10 @@ PRIVATE int cg_line
         if ( !qb )
         {
             status = cg_evaluate ("f", "n", Com) ;
-            if ( status ) return (status) ;
+            if ( status ) {
+                printf("stefano: line 1794");
+                return (status) ;
+            }
             if ( AWolfe ) fb = Com->f ;
             else          fb = Com->f - b*Com->wolfe_hi ;
             qb = TRUE ;
@@ -1837,7 +1863,10 @@ PRIVATE int cg_line
         Com->alphaold = Com->alpha ;
         Com->alpha = b ;
         status = cg_evaluate ("g", "p", Com) ;
-        if ( status ) return (status) ;
+        if ( status ) {
+            printf("stefano: line 1852");
+            return (status) ;
+        }
         b = Com->alpha ;
         qb = FALSE ;
         if ( AWolfe ) db = Com->df ;
@@ -1974,7 +2003,10 @@ Line:
 
         Com->alpha = alpha ;
         status = cg_evaluate ("fg", "n", Com) ;
-        if ( status ) return (status) ;
+        if ( status ){
+            printf("stefano: line 1989");
+            return (status) ;
+        }
         Com->alpha = alpha ;
         f = Com->f ;
         df = Com->df ;
@@ -2127,7 +2159,10 @@ PRIVATE int cg_contract
 
         Com->alpha = alpha ;
         status = cg_evaluate ("fg", "n", Com) ;
-        if ( status ) return (status) ;
+        if ( status ){
+            printf("stefano: line 2142");
+            return (status) ;
+        }
         f = Com->f ;
         df = Com->df ;
 
@@ -2258,7 +2293,10 @@ PRIVATE int cg_evaluate
                     if ( (Com->f == Com->f) && (Com->f < INF) &&
                          (Com->f > -INF) ) break ;
                 }
-                if ( i == Parm->ntries ) return (11) ;
+                if ( i == Parm->ntries ) {
+                    printf("stefano: line 2288");
+                    return (11) ;
+                }
             }
             Com->alpha = alpha ;
         }
@@ -2288,7 +2326,10 @@ PRIVATE int cg_evaluate
                     if ( (Com->df == Com->df) && (Com->df < INF) &&
                          (Com->df > -INF) ) break ;
                 }
-                if ( i == Parm->ntries ) return (11) ;
+                if ( i == Parm->ntries ) {
+                    printf("stefano: line 2321");
+                    return (11) ;
+                }
                 Com->rho = Parm->nan_rho ;
             }
             else Com->rho = Parm->rho ;
@@ -2341,7 +2382,10 @@ PRIVATE int cg_evaluate
                          (Com->df <  INF)     && (Com->f <  INF)    &&
                          (Com->df > -INF)     && (Com->f > -INF) ) break ;
                 }
-                if ( i == Parm->ntries ) return (11) ;
+                if ( i == Parm->ntries ) {
+                    printf("stefano: line 2377");
+                    return (11) ;
+                }
                 Com->rho = Parm->nan_rho ;
             }
             else Com->rho = Parm->rho ;
@@ -2385,15 +2429,21 @@ PRIVATE int cg_evaluate
             Com->ng++ ;
             if ( (Com->df != Com->df) || (Com->f != Com->f) ||
                  (Com->df == INF)     || (Com->f == INF)    ||
-                 (Com->df ==-INF)     || (Com->f ==-INF) ) return (11) ;
+                 (Com->df ==-INF)     || (Com->f ==-INF) ) {
+                printf("stefano: line 2424");
+                printf("stefano: df %e",Com->df);
+                return (11) ;
+            }
         }
         else if ( !strcmp (what, "f") ) /* compute function */
         {
             cg_step (xtemp, x, d, alpha, n) ;
             Com->f = Com->cg_value (xtemp, n) ;
             Com->nf++ ;
-            if ( (Com->f != Com->f) || (Com->f == INF) || (Com->f ==-INF) )
+            if ( (Com->f != Com->f) || (Com->f == INF) || (Com->f ==-INF) ){
+                printf("stefano: line 2434");
                 return (11) ;
+            }
         }
         else
         {
@@ -2401,8 +2451,10 @@ PRIVATE int cg_evaluate
             Com->cg_grad (gtemp, xtemp, n) ;
             Com->df = cg_dot (gtemp, d, n) ;
             Com->ng++ ;
-            if ( (Com->df != Com->df) || (Com->df == INF) || (Com->df ==-INF) )
+            if ( (Com->df != Com->df) || (Com->df == INF) || (Com->df ==-INF) ){
+                printf("stefano: line 2445");
                 return (11) ;
+            }
         }
     }
     return (0) ;
