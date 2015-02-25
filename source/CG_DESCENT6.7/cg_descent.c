@@ -204,6 +204,7 @@ int cg_descent /*  return status of solution process:
     Com.df = 0;
     Com.df0 = 0;
     Com.f = 0;
+    Com.f0 = 0;
     Com.n = n ;          /* problem dimension */
     Com.neps = 0 ;       /* number of times eps updated */
     Com.AWolfe = Parm->AWolfe ; /* do not touch user's AWolfe */
