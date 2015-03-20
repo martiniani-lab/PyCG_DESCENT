@@ -12,6 +12,7 @@ ADD_DEFINITIONS(-O3)
 ADD_DEFINITIONS(-lm)
 ADD_DEFINITIONS(-std=c++0x)
 ADD_DEFINITIONS(-Wall)
+ADD_DEFINITIONS(-g)
 
 #cmake_policy(SET CMP0015 NEW)
 
@@ -21,7 +22,7 @@ include_directories(${cgd_include})
 message("cgd include directory ${cgd_include}")
 
 # build the cgd_descent library
-FILE(GLOB cgd_sources ${cgd_include}/*.c)
+FILE(GLOB cgd_sources ${cgd_include}/CG_DESCENT6.7/*.c*)
 add_library(cgd_lib ${cgd_sources})
 
 # set the pele include directory

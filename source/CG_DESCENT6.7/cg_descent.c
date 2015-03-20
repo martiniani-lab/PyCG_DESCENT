@@ -22,6 +22,7 @@
       |                    Version 6.5  (April 30, 2013)               |
       |                    Version 6.6  (May 28, 2013)                 |
       |                    Version 6.7  (April 7, 2014)                |
+      |                    Version 6.8  (March 7, 2015)                |
       |                                                                |
       |           William W. Hager    and   Hongchao Zhang             |
       |          hager@math.ufl.edu       hozhang@math.lsu.edu         |
@@ -66,7 +67,7 @@
       3. W. W. Hager and H. Zhang, A survey of nonlinear conjugate gradient
          methods, Pacific Journal of Optimization, 2 (2006), pp. 35-58.
       4. W. W. Hager and H. Zhang, Limited memory conjugate gradients,
-         www.math.ufl.edu/~hager/papers/CG/lcg.pdf */
+         SIAM Journal on Optimization, 23 (2013), 2150-2168. */
 
 #include "cg_user.h"
 #include "cg_descent.h"
@@ -338,12 +339,15 @@ int cg_descent /*  return status of solution process:
 
     Com.df0 = -2.0*fabs(f)/alpha ;
 
-    Restart = FALSE ;  /* do not restart the algorithm */
-    IterRestart = 0 ;  /* counts number of iterations since last restart */
-    IterSub = 0 ;      /* counts number of iterations in subspace */
-    NumSub =  0 ;      /* total number of subspaces */
-    IterQuad = 0 ;     /* counts number of iterations that function change
-                          is close to that of a quadratic */
+    Restart = FALSE ;       /* do not restart the algorithm */
+    IterRestart = 0 ;       /* counts number of iterations since last restart */
+    IterSub = 0 ;           /* counts number of iterations in subspace */
+    NumSub =  0 ;           /* total number of subspaces */
+    IterQuad = 0 ;          /* counts number of iterations that function change
+                               is close to that of a quadratic */
+    scale = (double) 1 ;    /* scale is the initial approximation to inverse
+                               Hessian in LBFGS; after the initial iteration,
+                               scale is estimated by the BB formula */
 
     /* Start the conjugate gradient iteration.
        alpha starts as old step, ends as final step for current iteration
@@ -1002,6 +1006,7 @@ int cg_descent /*  return status of solution process:
                 IterQuad = 0 ;
                 mlast = -1 ;
                 memk = 0 ;
+                scale = (double) 1 ;
 
                 /* copy xtemp to x */
                 cg_copy (x, xtemp, n) ;
@@ -1039,7 +1044,11 @@ int cg_descent /*  return status of solution process:
                     if ( mp < 0 ) mp = mem-1 ;
                 }
                 /* scale = (alpha*dnorm2)/(dphi-dphi0) ; */
-                scale = SkYk[mlast]/cg_dot (Yk+mlast*n, Yk+mlast*n, n) ;
+                t = cg_dot (Yk+mlast*n, Yk+mlast*n, n) ;
+                if ( t > ZERO )
+                {
+                    scale = SkYk[mlast]/t ;
+                }
 
                 cg_scale (gtemp, gtemp, scale, n) ;
 
@@ -1075,6 +1084,7 @@ int cg_descent /*  return status of solution process:
 
             if ( Restart ) /*restart in subspace*/
             {
+                scale = (double) 1 ;
                 Restart = FALSE ;
                 IterRestart = 0 ;
                 IterSubRestart = 0 ;
@@ -1115,12 +1125,18 @@ int cg_descent /*  return status of solution process:
                        set gsub = gsubtemp */
                     cg_Yk (Yk+spp, gsub, gsubtemp, &yty, nsub) ;
                     SkYk [mlast_sub] = alpha*(dphi - dphi0) ;
-                    scale = SkYk [mlast_sub]/yty ;
+                    if ( yty > ZERO )
+                    {
+                        scale = SkYk [mlast_sub]/yty ;
+                    }
                 }
                 else
                 {
                     yty = cg_dot0 (Yk+mlast_sub*mem, Yk+mlast_sub*mem, nsub) ;
-                    scale = SkYk [mlast_sub]/yty ;
+                    if ( yty > ZERO )
+                    {
+                        scale = SkYk [mlast_sub]/yty ;
+                    }
                 }
 
                 /* calculate gsubtemp = H gsub */
@@ -1323,7 +1339,10 @@ int cg_descent /*  return status of solution process:
                 SkYk [mlast_sub] = t ;
 
                 /* scale = t/ykyk ; */
-                scale = t/yty ;
+                if ( yty > ZERO )
+                {
+                    scale = t/yty ;
+                }
 
                 /* calculate gsubtemp = H gsub */
                 mp = mlast_sub ;
@@ -1402,7 +1421,10 @@ int cg_descent /*  return status of solution process:
                 if ( Parm->AdaptiveBeta ) t = 2. - ONE/(0.1*QuadTrust + ONE) ;
                 else                      t = Parm->theta ;
                 t1 = MAX(ykyk-yty, ZERO) ; /* Theoretically t1 = ykyk-yty */
-                scale = (alpha*dkyk)/ykyk ; /* = sigma */
+                if ( ykyk > ZERO )
+                {
+                    scale = (alpha*dkyk)/ykyk ; /* = sigma */
+                }
                 beta = scale*((ykgk - ytg) - t*dphi*t1/dkyk)/dkyk ;
              /* beta = MAX (beta, Parm->BetaLower*dphi0/dnorm2) ; */
                 beta = MAX (beta, Parm->BetaLower*(dphi0*alpha)/dkyk) ;
@@ -4306,4 +4328,16 @@ Version 6.6 Change:
 
 Version 6.7 Change:
   Add interface to CUTEst
+
+Version 6.8 Change:
+  When the denominator of the variable "scale" vanishes, retain the
+  previous value of scale. This correct an error pointed out by
+  Zachary Blunden-Codd.
+
+Stefano's Change:
+  set uninitialised values Com.df = 0;Com.df0 = 0; Com.f = 0; Com.f0 = 0;
+  (this fixes a bug that tipically arises when calling the minimiser several times
+  in a row, strictly speaking uninitialising a variable leads to undefined behaviour)
+  The function now takes a pointer to a user_test for the user own termination conditions
+  and to user_data that allows to pass a pointer to a class with methods
 */
