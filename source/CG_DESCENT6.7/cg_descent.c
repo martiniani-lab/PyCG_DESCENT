@@ -284,8 +284,8 @@ int cg_descent /*  return status of solution process:
     if ( status )
     {
         if ( PrintLevel > 0 ) printf ("Function undefined at starting point\n");
-        printf("stefano: line 281");
-        printf("stefano: fvalue %e", f);
+        printf("RuntimeError: line 281 ");
+        printf("fvalue %e ->", f);
 
         goto Exit ;
     }
@@ -303,7 +303,7 @@ int cg_descent /*  return status of solution process:
     if ( f != f )
     {
         status = 11 ;
-        printf("stefano: line 298");
+        printf("RuntimeError: line 298 ->");
         goto Exit ;
     }
 
@@ -374,7 +374,7 @@ int cg_descent /*  return status of solution process:
                     Com.alpha = Parm->psi1*alpha ;
                     status = cg_evaluate ("g", "y", &Com) ;
                     if ( status ) {
-                        printf("stefano: line 366");
+                        printf("RuntimeError: line 366 ->");
                         goto Exit ;
                     }
                     if ( Com.df > dphi0 )
@@ -407,7 +407,7 @@ int cg_descent /*  return status of solution process:
                     Com.alpha = MIN (t, Parm->psi_hi)*alpha ;
                     status = cg_evaluate ("f", "y", &Com) ;
                     if ( status ) {
-                        printf("stefano: line 399");
+                        printf("RuntimeError: line 399 ->");
                         goto Exit ;
                     }
                     ftemp = Com.f ;
@@ -479,7 +479,7 @@ int cg_descent /*  return status of solution process:
         dphi = Com.df ;
 
         if ( status ) {
-            printf("stefano: line 471");
+            printf("RuntimeError: line 471 ->");
             goto Exit ;
         }
 
@@ -575,7 +575,7 @@ int cg_descent /*  return status of solution process:
                 {
                    if ( PrintLevel >= 1 )
                    {
-                       printf ("iter: %i exit subspace\n", (int) iter) ;
+                       printf ("iter: %i RuntimeError subspace\n", (int) iter) ;
                    }
                    FirstFull = TRUE ; /* first iteration in full space */
                    Subspace = FALSE ; /* leave the subspace */
@@ -1508,7 +1508,7 @@ int cg_descent /*  return status of solution process:
     status = 2 ;
 Exit:
     if ( status == 11 ) {
-        printf("stefano: line 1482");
+        printf("RuntimeError: line 1482 ->");
         gnorm = INF ; /* function is undefined */
     }
     if ( Stat != NULL )
@@ -1776,7 +1776,7 @@ PRIVATE int cg_line
         qb = FALSE ;
     }
     if ( status ) {
-        printf("stefano: line 1747");
+        printf("RuntimeError: line 1747 ->");
         return (status) ; /* function is undefined */
     }
     b = Com->alpha ;
@@ -1826,7 +1826,7 @@ PRIVATE int cg_line
         {
             status = cg_evaluate ("f", "n", Com) ;
             if ( status ) {
-                printf("stefano: line 1794");
+                printf("RuntimeError: line 1794 ->");
                 return (status) ;
             }
             if ( AWolfe ) fb = Com->f ;
@@ -1887,7 +1887,7 @@ PRIVATE int cg_line
         Com->alpha = b ;
         status = cg_evaluate ("g", "p", Com) ;
         if ( status ) {
-            printf("stefano: line 1852");
+            printf("RuntimeError: line 1852 ->");
             return (status) ;
         }
         b = Com->alpha ;
@@ -2027,7 +2027,7 @@ Line:
         Com->alpha = alpha ;
         status = cg_evaluate ("fg", "n", Com) ;
         if ( status ){
-            printf("stefano: line 1989");
+            printf("RuntimeError: line 1989 ->");
             return (status) ;
         }
         Com->alpha = alpha ;
@@ -2183,7 +2183,7 @@ PRIVATE int cg_contract
         Com->alpha = alpha ;
         status = cg_evaluate ("fg", "n", Com) ;
         if ( status ){
-            printf("stefano: line 2142");
+            printf("RuntimeError: line 2142 ->");
             return (status) ;
         }
         f = Com->f ;
@@ -2317,7 +2317,7 @@ PRIVATE int cg_evaluate
                          (Com->f > -INF) ) break ;
                 }
                 if ( i == Parm->ntries ) {
-                    printf("stefano: line 2288");
+                    printf("RuntimeError: line 2288 ->");
                     return (11) ;
                 }
             }
@@ -2350,7 +2350,7 @@ PRIVATE int cg_evaluate
                          (Com->df > -INF) ) break ;
                 }
                 if ( i == Parm->ntries ) {
-                    printf("stefano: line 2321");
+                    printf("RuntimeError: line 2321 ->");
                     return (11) ;
                 }
                 Com->rho = Parm->nan_rho ;
@@ -2406,7 +2406,7 @@ PRIVATE int cg_evaluate
                          (Com->df > -INF)     && (Com->f > -INF) ) break ;
                 }
                 if ( i == Parm->ntries ) {
-                    printf("stefano: line 2377");
+                    printf("RuntimeError: line 2377 ->");
                     return (11) ;
                 }
                 Com->rho = Parm->nan_rho ;
@@ -2453,8 +2453,8 @@ PRIVATE int cg_evaluate
             if ( (Com->df != Com->df) || (Com->f != Com->f) ||
                  (Com->df == INF)     || (Com->f == INF)    ||
                  (Com->df ==-INF)     || (Com->f ==-INF) ) {
-                printf("stefano: line 2424");
-                printf("stefano: df %e",Com->df);
+                printf("RuntimeError: line 2424 ");
+                printf("df %e ->",Com->df);
                 return (11) ;
             }
         }
@@ -2464,7 +2464,7 @@ PRIVATE int cg_evaluate
             Com->f = Com->cg_value (xtemp, n) ;
             Com->nf++ ;
             if ( (Com->f != Com->f) || (Com->f == INF) || (Com->f ==-INF) ){
-                printf("stefano: line 2434");
+                printf("RuntimeError: line 2434 ->");
                 return (11) ;
             }
         }
@@ -2475,7 +2475,7 @@ PRIVATE int cg_evaluate
             Com->df = cg_dot (gtemp, d, n) ;
             Com->ng++ ;
             if ( (Com->df != Com->df) || (Com->df == INF) || (Com->df ==-INF) ){
-                printf("stefano: line 2445");
+                printf("RuntimeError: line 2445 ->");
                 return (11) ;
             }
         }
