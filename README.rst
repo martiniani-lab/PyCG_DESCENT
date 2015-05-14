@@ -1,9 +1,3 @@
-.. image:: https://travis-ci.org/smcantab/PyCG_DESCENT.svg?branch=master
-    :target: https://travis-ci.org/smcantab/PyCG_DESCENT
-
-.. image:: https://coveralls.io/repos/smcantab/PyCG_DESCENT/badge.png?branch=master
-    :target: https://coveralls.io/r/smcantab/PyCG_DESCENT?branch=master
-
 PyCG_DESCENT : Python Conjugate Gradient Descent
 ++++++++++++++++++++++++++++++++++++++++++++++++
 
