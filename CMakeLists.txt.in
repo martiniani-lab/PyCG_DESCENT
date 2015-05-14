@@ -26,7 +26,7 @@ message("PyCG_DESCENT include directory: ${PyCG_DESCENT_include}")
 
 # build the PyCG_DESCENT library
 FILE(GLOB pele_sources ${PyCG_DESCENT_include}/PyCG_DESCENT/*.cpp)
-FILE(GLOB PyCG_DESCENT_sources ${PyCG_DESCENT_include}/CG_DESCENT6.7/*.c*)
+FILE(GLOB PyCG_DESCENT_sources ${PyCG_DESCENT_include}/CG_DESCENT/*.c*)
 add_library(PyCG_DESCENT_lib SHARED ${PyCG_DESCENT_sources} ${pele_sources})
 
 function(make_cython_lib cython_cxx_source)

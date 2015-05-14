@@ -7,7 +7,7 @@
 #include "pele/base_potential.h"
 #include "pele/optimizer.h"
 extern "C" {
-#include "../CG_DESCENT6.7/cg_user.h"
+#include "../CG_DESCENT/cg_user.h"
 }
 
 /* entries in cg_descent
@@ -102,7 +102,7 @@ public:
         m_nfev = 0;
         m_success = false;
 
-        //using ::cg_descent call in the global namespace (the one in CG_DESCENT 6.7), this resolves the ambiguity
+        //using ::cg_descent call in the global namespace (the one in CG_DESCENT 6.8), this resolves the ambiguity
         INT cgout = ::cg_descent(m_x.data(), m_x.size(), &m_stats, &m_parm, m_tol, pycgd_value,
                 pycgd_gradient, pycgd_value_gradient, NULL, pycgd_test_callback, (void*) this);
         m_success = this->test_success(cgout);
@@ -123,7 +123,7 @@ public:
         }
 
     /*============================================================================
-      CG_DESCENT6.7 parameters that the user may wish to modify
+      CG_DESCENT6.8 parameters that the user may wish to modify
      ----------------------------------------------------------------------------*/
     /* Level 0 = no printing, ... , Level 3 = maximum printing */
     inline void set_PrintLevel(int val){ m_parm.PrintLevel = val; }
@@ -223,7 +223,7 @@ public:
     inline void set_nan_decay(double val){m_parm.nan_decay = val;}
 
     /*============================================================================
-       CG_DESCENT6.7 technical parameters which the user probably should not touch
+       CG_DESCENT6.8 technical parameters which the user probably should not touch
   ----------------------------------------------------------------------------*/
     /* Wolfe line search parameter */
     inline void set_delta(double val){m_parm.delta = val;}
