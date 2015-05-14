@@ -7,7 +7,7 @@
 #include "pele/base_potential.h"
 #include "pele/optimizer.h"
 extern "C" {
-#include "cg_user.h"
+#include "../CG_DESCENT/cg_user.h"
 }
 
 /* entries in cg_descent
@@ -52,11 +52,13 @@ inline double pycgd_value_gradient(double* g, double* x, INT n){
     return glob_pot->get_energy_gradient(xarray, garray);
 }
 
+inline int pycgd_test_callback(double f, double* x, double* g, INT n, void* user_data);
+
 }
 
 namespace pycgd{
 
-class cg_descent{
+class CGDescent{
 protected:
     std::shared_ptr<pele::BasePotential> m_pot;
     cg_parameter m_parm;
@@ -66,7 +68,7 @@ protected:
     size_t m_nfev;
     bool m_success;
 public:
-    cg_descent(std::shared_ptr<pele::BasePotential> potential, const pele::Array<double> x0, double tol=1e-4,  size_t PrintLevel=0):
+    CGDescent(std::shared_ptr<pele::BasePotential> potential, const pele::Array<double> x0, double tol=1e-4,  size_t PrintLevel=0):
         m_pot(potential),
         m_parm(),
         m_stats(),
@@ -87,7 +89,11 @@ public:
         m_parm.psi2 = 10.0;
     };
 
-    ~cg_descent(){}
+    virtual ~CGDescent(){}
+
+    virtual bool test_convergence(double energy, pele::Array<double> x, pele::Array<double> g){
+        return false;
+    };
 
     //run
     inline void run(){
@@ -96,8 +102,9 @@ public:
         m_nfev = 0;
         m_success = false;
 
-        //using ::cg_descent call in the global namespace (the one in CG_DESCENT 6.7), this resolves the ambiguity
-        INT cgout = ::cg_descent(m_x.data(), m_x.size(), &m_stats, &m_parm, m_tol, pycgd_value, pycgd_gradient, pycgd_value_gradient, NULL);
+        //using ::cg_descent call in the global namespace (the one in CG_DESCENT 6.8), this resolves the ambiguity
+        INT cgout = ::cg_descent(m_x.data(), m_x.size(), &m_stats, &m_parm, m_tol, pycgd_value,
+                pycgd_gradient, pycgd_value_gradient, NULL, pycgd_test_callback, (void*) this);
         m_success = this->test_success(cgout);
         m_nfev = glob_nfev;
 
@@ -116,8 +123,8 @@ public:
         }
 
     /*============================================================================
-      parameters that the user may wish to modify
-  ----------------------------------------------------------------------------*/
+      CG_DESCENT6.8 parameters that the user may wish to modify
+     ----------------------------------------------------------------------------*/
     /* Level 0 = no printing, ... , Level 3 = maximum printing */
     inline void set_PrintLevel(int val){ m_parm.PrintLevel = val; }
     /* abort cg after maxit iterations */
@@ -216,7 +223,7 @@ public:
     inline void set_nan_decay(double val){m_parm.nan_decay = val;}
 
     /*============================================================================
-       technical parameters which the user probably should not touch
+       CG_DESCENT6.8 technical parameters which the user probably should not touch
   ----------------------------------------------------------------------------*/
     /* Wolfe line search parameter */
     inline void set_delta(double val){m_parm.delta = val;}
@@ -287,6 +294,8 @@ public:
         pele::Array<double> g = this->get_g();
         return norm(g)/sqrt(m_x.size());
     };
+    inline void set_tol(double val){ m_tol = val; }
+    inline double get_tol(){ return m_tol; }
 
 protected:
     inline bool test_success(INT cgout){
@@ -331,6 +340,12 @@ protected:
             case 10:
                 std::cout<<"out of memory"<<std::endl;
                 break;
+            case 11:
+                std::cout<<"function nan or +-INF and could not be repaired"<<std::endl;
+                break;
+            case 12:
+                std::cout<<"invalid choice for memory parameter"<<std::endl;
+                break;
             default:
                 std::cout<<"failed, value not known"<<std::endl;
                 break;
@@ -341,4 +356,17 @@ protected:
 };
 
 }
+
+namespace {
+
+inline int pycgd_test_callback(double f, double* x, double* g, INT n, void* user_data){
+
+    pycgd::CGDescent * cgd = static_cast<pycgd::CGDescent*>(user_data);
+    pele::Array<double> xarray(x, (size_t) n);
+    pele::Array<double> garray(g, (size_t) n);
+    return (int) cgd->test_convergence(f, xarray, garray);
+}
+
+}
+
 #endif

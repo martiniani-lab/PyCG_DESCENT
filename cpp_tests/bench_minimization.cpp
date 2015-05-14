@@ -7,7 +7,7 @@
 #include "pele/lbfgs.h"
 #include "pele/matrix.h"
 #include "pele/array.h"
-#include "PyCG_DESCENT/cg_descent_wrapper.h"
+#include "PyCG_DESCENT/cg_descent_wrapper.hpp"
 
 using std::string;
 
@@ -17,7 +17,7 @@ int main(int argc, char ** argv)
     std::default_random_engine generator;
     std::uniform_real_distribution<double> distribution(0,1);
 
-    size_t natoms = 500;
+    size_t natoms = 100;
     pele::Array<double> x(3*natoms);
 
     auto lj = std::make_shared<pele::LJ>(4., 4.);
@@ -42,8 +42,8 @@ int main(int argc, char ** argv)
     std::cout<<"lbfgs avg nfev "<<tot_nfev_lbfgs/totiter<<std::endl;
 
 //conjugate gradient descent
-    pycgd::cg_descent cg_descent(lj, x, 1e-4);
-    cg_descent.set_memory(0);
+    pycgd::CGDescent cg_descent(lj, x, 1e-4);
+    cg_descent.set_memory(11);
 
     size_t tot_nfev_cgd = 0;
     for (size_t j=0;j<totiter;++j)
@@ -53,9 +53,9 @@ int main(int argc, char ** argv)
         }
         cg_descent.reset(x);
         cg_descent.run();
-        std::cout<<"energy: "<<cg_descent.get_f()<<std::endl;
+        /*std::cout<<"energy: "<<cg_descent.get_f()<<std::endl;
         std::cout<<"nfev: "<<cg_descent.get_nfev()<<std::endl;
-        std::cout<<"RMS: "<<cg_descent.get_rms()<<std::endl;
+        std::cout<<"RMS: "<<cg_descent.get_rms()<<std::endl;*/
         tot_nfev_cgd += cg_descent.get_nfev();
     }
     std::cout<<"cgd avg glob nfev "<<tot_nfev_cgd/totiter<<std::endl;
