@@ -25,8 +25,8 @@ Pacific Journal of Optimization, 2 (2006), pp. 35-58.
 [4] W. W. Hager and H. Zhang, Limited memory conjugate gradients, 
 www.math.ufl.edu/~hager/papers/CG/lcg.pdf
 
-This project wraps the CG_DESCENT C-library (Version 6.7) released by William Hager
-under the GNU general public license.
+This project wraps the CG_DESCENT C-library (Version 6.8) released by William Hager
+under the GNU general public license and adds some more functionalities.
 CG_DESCENT wraps the `cg_descent` method first into a c++ optimizer class on the model of the
 `pele <https://github.com/pele-python/pele>`_ project and then through Cython into
 the `CGDescent` Python class.
