@@ -1,4 +1,5 @@
-[![Build Status](https://travis-ci.org/smcantab/PyCG_DESCENT.svg?branch=master)](https://travis-ci.org/smcantab/PyCG_DESCENT)
+.. image:: https://travis-ci.org/smcantab/PyCG_DESCENT.svg?branch=master
+    :target: https://travis-ci.org/smcantab/PyCG_DESCENT
 
 PyCG_DESCENT : Python Conjugate Gradient Descent
 ++++++++++++++++++++++++++++++++++++++++++++++++
