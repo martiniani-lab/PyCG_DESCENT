@@ -3,9 +3,11 @@
 
 #include <math.h>
 #include <memory>
+
 #include "pele/array.h"
 #include "pele/base_potential.h"
 #include "pele/optimizer.h"
+
 extern "C" {
 #include "../CG_DESCENT/cg_user.h"
 }
@@ -27,7 +29,7 @@ extern "C" {
  *
 */
 
-namespace{
+namespace {
 
 pele::BasePotential* glob_pot;
 size_t glob_nfev;
@@ -54,9 +56,9 @@ inline double pycgd_value_gradient(double* g, double* x, INT n){
 
 inline int pycgd_test_callback(double f, double* x, double* g, INT n, void* user_data);
 
-}
+} // namespace
 
-namespace pycgd{
+namespace pycgd {
 
 class CGDescent{
 protected:
@@ -355,7 +357,7 @@ protected:
     }
 };
 
-}
+} // namespace pycgd
 
 namespace {
 
@@ -367,6 +369,6 @@ inline int pycgd_test_callback(double f, double* x, double* g, INT n, void* user
     return (int) cgd->test_convergence(f, xarray, garray);
 }
 
-}
+} // namespace
 
-#endif
+#endif // #ifndef _CGD_WRAPPER_H__
