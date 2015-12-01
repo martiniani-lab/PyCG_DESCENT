@@ -46,7 +46,7 @@ inline void pycgd_gradient(double* g, double* x, INT n)
     pele::Array<double> xarray(x, (size_t) n);
     pele::Array<double> garray(g, (size_t) n);
     ++glob_nfev;
-    double f = glob_pot->get_energy_gradient(xarray, garray);
+    glob_pot->get_energy_gradient(xarray, garray);
 }
 
 inline double pycgd_value_gradient(double* g, double* x, INT n)
