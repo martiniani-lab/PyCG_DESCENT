@@ -8,6 +8,8 @@ Source code: https://github.com/smcantab/PyCG_DESCENT
 
 Documentation: http://smcantab.github.io/PyCG_DESCENT/
 
+Example: https://gist.github.com/smcantab/8045ad120fe724c089ac48412e4e6dde
+
 Python wrapper for the Hager and Zang CG_DESCENT algorithm.
 CG_DESCENT is a conjugate gradient algorithm for solving an unconstrained minimization
 problem of the form::
@@ -36,7 +38,7 @@ the `CGDescent` Python class.
 
 The current release requires that the objective function to optimize derives from
 the `pele`_ `BasePotential` data structure, future releases will remove this dependency.
-
+    
 Required packages
 -----------------
 
