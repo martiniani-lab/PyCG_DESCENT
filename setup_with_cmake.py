@@ -40,7 +40,7 @@ idcompiler = None
 if not jargs.compiler or jargs.compiler in ("unix", "gnu", "gcc"):
     idcompiler = "unix"
     remaining_args += ["-c", idcompiler]
-elif jargs.compiler in ("intel", "icc", "icpc"):
+elif jargs.compiler in ("intelem", "intel", "icc", "icpc"):
     idcompiler = "intel"
     remaining_args += ["-c", idcompiler]
 
@@ -53,7 +53,12 @@ else:
     cmake_parallel_args = ["-j" + str(jargs.j)]
 
 #extra compiler args
-cmake_compiler_extra_args=["-std=c++0x","-Wall", "-Wextra", "-pedantic", "-O3"]
+cmake_compiler_extra_args = ["-std=c++0x","-Wall", "-Wextra", "-pedantic", "-O3", "-fPIC"]
+if idcompiler.lower() == 'unix':
+    cmake_compiler_extra_args += ['-march=native', '-flto', '-fopenmp']
+else:
+    cmake_compiler_extra_args += ['-axCORE-AVX2', '-ipo', '-qopenmp', '-ip', '-unroll',
+                                  '-qopt-report']
     
 
 #
@@ -192,13 +197,19 @@ def set_compiler_env(compiler_id):
     if compiler_id.lower() in ("unix"):
         env["CC"] = subprocess.check_output(["which", "gcc"]).rstrip('\n')
         env["CXX"] = subprocess.check_output(["which", "g++"]).rstrip('\n')
+        env["LD"] = subprocess.check_output(["which", "ld"]).rstrip('\n')
+        env["AR"] = subprocess.check_output(["which", "ar"]).rstrip('\n')
     elif compiler_id.lower() in ("intel"):
         env["CC"] = subprocess.check_output(["which", "icc"]).rstrip('\n')
         env["CXX"] = subprocess.check_output(["which", "icpc"]).rstrip('\n')
+        env["LD"] = subprocess.check_output(["which", "xild"]).rstrip('\n')
+        env["AR"] = subprocess.check_output(["which", "xiar"]).rstrip('\n')
     else:
         raise Exception("compiler_id not known")
     #this line only works is the build directory has been deleted
-    cmake_compiler_args =shlex.split("-D CMAKE_C_COMPILER={} -D CMAKE_CXX_COMPILER={}".format(env["CC"],env["CXX"]))
+    cmake_compiler_args = shlex.split("-D CMAKE_C_COMPILER={} -D CMAKE_CXX_COMPILER={} "
+                                      "-D CMAKE_LINKER={} -D CMAKE_AR={}"
+                                      .format(env["CC"], env["CXX"], env["LD"], env["AR"]))
     return env, cmake_compiler_args
 
 def run_cmake(compiler_id="unix"):
@@ -207,7 +218,7 @@ def run_cmake(compiler_id="unix"):
     print "\nrunning cmake in directory", cmake_build_dir
     cwd = os.path.abspath(os.path.dirname(__file__))
     env, cmake_compiler_args = set_compiler_env(compiler_id)
-    
+
     p = subprocess.call(["cmake"] + cmake_compiler_args + [cwd], cwd=cmake_build_dir, env=env)
     if p != 0:
         raise Exception("running cmake failed")
