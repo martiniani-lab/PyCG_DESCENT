@@ -1,3 +1,5 @@
+from __future__ import print_function
+from builtins import object
 import os
 import sys
 import subprocess
@@ -33,7 +35,7 @@ def generate_cython():
 
 generate_cython()
 
-class ModuleList:
+class ModuleList(object):
     def __init__(self, **kwargs):
         self.module_list = []
         self.kwargs = kwargs
