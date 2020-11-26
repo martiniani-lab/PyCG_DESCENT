@@ -199,7 +199,6 @@ def set_compiler_env(compiler_id):
     """
     env = os.environ.copy()
     if compiler_id.lower() in ("unix"):
-        print(env, 'eeenv')
         env["CC"] = (subprocess.check_output(["which", "gcc"])).decode(encoding).rstrip('\n')
         env["CXX"] = (subprocess.check_output(["which", "g++"])).decode(encoding).rstrip('\n')
         env["LD"] = (subprocess.check_output(["which", "ld"])).decode(encoding).rstrip('\n')
