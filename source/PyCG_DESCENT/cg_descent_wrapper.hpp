@@ -3,10 +3,11 @@
 
 #include <math.h>
 #include <memory>
+#include <algorithm>
 
-#include "pele/array.h"
-#include "pele/base_potential.h"
-#include "pele/optimizer.h"
+#include "pele/array.hpp"
+#include "pele/base_potential.hpp"
+#include "pele/optimizer.hpp"
 
 extern "C" {
 #include "../CG_DESCENT/cg_user.h"
@@ -36,25 +37,44 @@ size_t glob_nfev;
 
 inline double pycgd_value(double* x, INT n)
 {
-    pele::Array<double> xarray(x, (size_t) n);
     ++glob_nfev;
-    return glob_pot->get_energy(xarray);
+    pele::Array<double> xarray(x, (size_t) n);
+    if (std::any_of(xarray.begin(), xarray.end(),
+                    [](double elem) { return !std::isfinite(elem); }
+                    )) {
+        return NAN;
+    } else {
+        return glob_pot->get_energy(xarray);
+    }
 }
 
 inline void pycgd_gradient(double* g, double* x, INT n)
 {
+    ++glob_nfev;
     pele::Array<double> xarray(x, (size_t) n);
     pele::Array<double> garray(g, (size_t) n);
-    ++glob_nfev;
-    glob_pot->get_energy_gradient(xarray, garray);
+    if (std::any_of(xarray.begin(), xarray.end(),
+                    [](double elem) { return !std::isfinite(elem); }
+                    )) {
+        garray.assign(NAN);
+    } else {
+        glob_pot->get_energy_gradient(xarray, garray);
+    }
 }
 
 inline double pycgd_value_gradient(double* g, double* x, INT n)
 {
+    ++glob_nfev;
     pele::Array<double> xarray(x, (size_t) n);
     pele::Array<double> garray(g, (size_t) n);
-    ++glob_nfev;
-    return glob_pot->get_energy_gradient(xarray, garray);
+    if (std::any_of(xarray.begin(), xarray.end(),
+                    [](double elem) { return !std::isfinite(elem); }
+                    )) {
+        garray.assign(NAN);
+        return NAN;
+    } else {
+        return glob_pot->get_energy_gradient(xarray, garray);
+    }
 }
 
 inline int pycgd_test_callback(double f, double* x, double* g, INT n, void* user_data);
@@ -96,7 +116,7 @@ public:
 
     virtual ~CGDescent() {}
 
-    virtual bool test_convergence(double energy, pele::Array<double> x, pele::Array<double> g) { return false; }
+    virtual bool test_convergence(double energy, pele::Array<double> const & x) { return false; }
 
     //run
     inline void run()
@@ -294,7 +314,13 @@ public:
     inline pele::Array<double> get_g()
     {
         pele::Array<double> g(m_x.size());
-        m_pot->get_energy_gradient(m_x, g);
+        if (std::any_of(m_x.begin(), m_x.end(),
+                        [](double elem) { return !std::isfinite(elem); }
+                        )) {
+            g.assign(NAN);
+        } else {
+            m_pot->get_energy_gradient(m_x, g);
+        }
         return g.copy();
     }
     /*get root mean square gradient*/
@@ -373,8 +399,7 @@ inline int pycgd_test_callback(double f, double* x, double* g, INT n, void* user
 {
     pycgd::CGDescent * cgd = static_cast<pycgd::CGDescent*>(user_data);
     pele::Array<double> xarray(x, (size_t) n);
-    pele::Array<double> garray(g, (size_t) n);
-    return (int) cgd->test_convergence(f, xarray, garray);
+    return (int) cgd->test_convergence(f, xarray);
 }
 
 } // namespace

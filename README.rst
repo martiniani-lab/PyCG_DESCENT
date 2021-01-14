@@ -54,6 +54,9 @@ python packages:
 #. `pele`_:
     python energy landscape explorer for potential, minimizers etc.
 
+#. future:
+   Compatibility layer between python 2.x and python 3.x.
+
 non-python packages:
 
 1. cmake: optional

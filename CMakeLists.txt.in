@@ -1,5 +1,34 @@
 # this file is mean to be parsed by python before being a proper CMakeLists.txt file
 # in particular, the following strings will be set by python
+
+
+# TODO This package depends on as_cpp_potential from pele which adds 
+# an unfortunate petsc dependency. This should be fixed.
+
+
+
+
+
+
+#################################### petsc #############################################
+set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
+find_package(PETSc REQUIRED)
+
+# find_package(MPI) #make it REQUIRED, if you want
+
+set(MPI_INCLUDE_DIR
+  /home/praharsh/.local/include
+  CACHE PATH "Location of MPI header files")
+
+set(MPI_LIBRARY_DIR
+  /home/praharsh/.local/include
+  CACHE PATH "Location of MPI LIBRARIES")
+
+set(MPI_LIBRARIES
+  -L${MPI_LIBRARY_DIR})
+
+
+
 set(numpy_include __NUMPY_INCLUDE__)
 set(PYTHON_INCLUDE_DIRS __PYTHON_INCLUDE__)
 set(PYTHON_LDFLAGS "__PYTHON_LDFLAGS__")
@@ -9,6 +38,7 @@ message("python include dirs: ${PYTHON_INCLUDE_DIRS}")
 message("numpy include dirs: ${numpy_include}")
 message("pele include dirs: ${pele_include}")
 include_directories(${numpy_include})
+include_directories(SYSTEM ${MPI_INCLUDE_DIR})
 include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(${pele_include})
 
@@ -34,6 +64,7 @@ function(make_cython_lib cython_cxx_source)
   string(REGEX REPLACE ".cxx$" "" library_name ${library_name})
   add_library(${library_name} SHARED ${cython_cxx_source})
   target_link_libraries(${library_name} PyCG_DESCENT_lib)
+  target_link_libraries(${library_name} PkgConfig::PETSC)
   set_target_properties(${library_name} PROPERTIES PREFIX "")
   message("making library ${library_name} from source ${cython_cxx_source}")
 endfunction(make_cython_lib)
