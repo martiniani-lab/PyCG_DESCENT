@@ -5,9 +5,9 @@
 #include <memory>
 #include <algorithm>
 
-#include "pele/array.h"
-#include "pele/base_potential.h"
-#include "pele/optimizer.h"
+#include "pele/array.hpp"
+#include "pele/base_potential.hpp"
+#include "pele/optimizer.hpp"
 
 extern "C" {
 #include "../CG_DESCENT/cg_user.h"
