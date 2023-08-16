@@ -1,38 +1,64 @@
 # this file is mean to be parsed by python before being a proper CMakeLists.txt file
 # in particular, the following strings will be set by python
 
-
-# TODO This package depends on as_cpp_potential from pele which adds 
+# TODO This package depends on as_cpp_potential from pele which adds
 # an unfortunate petsc dependency. This should be fixed.
 
-
-
-
-
-
-#################################### petsc #############################################
+# ################################### petsc #############################################
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake/")
-find_package(PETSc REQUIRED)
-
-# find_package(MPI) #make it REQUIRED, if you want
-
-set(MPI_INCLUDE_DIR
-  /home/praharsh/.local/include
-  CACHE PATH "Location of MPI header files")
-
-set(MPI_LIBRARY_DIR
-  /home/praharsh/.local/include
-  CACHE PATH "Location of MPI LIBRARIES")
-
-set(MPI_LIBRARIES
-  -L${MPI_LIBRARY_DIR})
-
-
 
 set(numpy_include __NUMPY_INCLUDE__)
 set(PYTHON_INCLUDE_DIRS __PYTHON_INCLUDE__)
 set(PYTHON_LDFLAGS "__PYTHON_LDFLAGS__")
-set(pele_include __PELE_INCLUDE__)
+set(pele_dir __PELE_INCLUDE__)
+
+# BLAS and LAPACK
+find_package(BLAS REQUIRED)
+find_package(LAPACK REQUIRED)
+
+set(EXT_INSTALL_PATH "${pele_dir}/../extern/install")
+
+# lapacke.h comes with Eigen
+set(LAPACKE_INCLUDE_DIR
+  ${EXT_INSTALL_PATH}/include/Eigen/src/misc
+  CACHE PATH "Location of lapacke include")
+
+message("lapacke include directory: ${LAPACKE_INCLUDE_DIR}")
+
+set(SUNDIALS_INCLUDE_DIR
+  ${EXT_INSTALL_PATH}/include
+  CACHE PATH "Location of SUNDIALS header files")
+
+if(EXISTS "${EXT_INSTALL_PATH}/lib")
+  set(SUNDIALS_LIBRARY_DIR
+    ${EXT_INSTALL_PATH}/lib
+    CACHE PATH "Location of SUNDIALS libraries")
+else()
+  set(SUNDIALS_LIBRARY_DIR
+    ${EXT_INSTALL_PATH}/lib64
+    CACHE PATH "Location of SUNDIALS libraries")
+endif()
+
+# Find the SUNDIALS libraries
+find_library(SUNDIALS_SOLVER_LIB
+  sundials_cvode ${SUNDIALS_LIBRARY_DIR}
+  DOC "CVODE library")
+
+find_library(SUNDIALS_NVEC_LIB
+  sundials_nvecserial ${SUNDIALS_LIBRARY_DIR}
+  DOC "NVECTOR_SERIAL library")
+
+find_library(SUNDIALS_MANYVEC_LIB
+  sundials_nvecmanyvector ${SUNDIALS_LIBRARY_DIR}
+  DOC "NVECTOR_MANYVECTOR library")
+
+message("SUNDIALS_LIBRARY_DIR: ${SUNDIALS_LIBRARY_DIR}")
+set(SUNDIALS_LIBRARIES
+  -L${SUNDIALS_LIBRARY_DIR}
+  ${SUNDIALS_SOLVER_LIB}
+  ${SUNDIALS_NVEC_LIB}
+  ${SUNDIALS_MANYVEC_LIB}
+  ${SUNDIALS_EXTRA_LIBS})
 
 message("python include dirs: ${PYTHON_INCLUDE_DIRS}")
 message("numpy include dirs: ${numpy_include}")
@@ -41,13 +67,14 @@ include_directories(${numpy_include})
 include_directories(SYSTEM ${MPI_INCLUDE_DIR})
 include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(${pele_include})
+include_directories(${LAPACKE_INCLUDE_DIR})
 
 cmake_minimum_required(VERSION 2.8)
 
 enable_language(CXX)
 SET(CMAKE_CXX_FLAGS __COMPILER_EXTRA_ARGS__)
 
-#cmake_policy(SET CMP0015 NEW)
+# cmake_policy(SET CMP0015 NEW)
 
 # set the PyCG_DESCENT include directory
 set(PyCG_DESCENT_include ${CMAKE_SOURCE_DIR}/source)
@@ -64,9 +91,8 @@ function(make_cython_lib cython_cxx_source)
   string(REGEX REPLACE ".cxx$" "" library_name ${library_name})
   add_library(${library_name} SHARED ${cython_cxx_source})
   target_link_libraries(${library_name} PyCG_DESCENT_lib)
-  target_link_libraries(${library_name} PkgConfig::PETSC)
+  target_link_libraries(${library_name} ${SUNDIALS_LIBRARIES})
+  target_link_libraries(${library_name} ${LAPACK_LIBRARIES})
   set_target_properties(${library_name} PROPERTIES PREFIX "")
   message("making library ${library_name} from source ${cython_cxx_source}")
 endfunction(make_cython_lib)
-
-
