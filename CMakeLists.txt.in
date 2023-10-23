@@ -68,6 +68,7 @@ include_directories(SYSTEM ${MPI_INCLUDE_DIR})
 include_directories(${PYTHON_INCLUDE_DIRS})
 include_directories(${pele_include})
 include_directories(${LAPACKE_INCLUDE_DIR})
+include_directories(${SUNDIALS_INCLUDE_DIR})
 
 cmake_minimum_required(VERSION 2.8)
 
