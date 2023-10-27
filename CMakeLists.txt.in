@@ -41,15 +41,15 @@ endif()
 
 # Find the SUNDIALS libraries
 find_library(SUNDIALS_SOLVER_LIB
-  sundials_cvode ${SUNDIALS_LIBRARY_DIR}
+  sundials_cvode ${SUNDIALS_LIBRARY_DIR} PATHS ${SUNDIALS_LIBRARY_DIR} NO_DEFAULT_PATH
   DOC "CVODE library")
 
 find_library(SUNDIALS_NVEC_LIB
-  sundials_nvecserial ${SUNDIALS_LIBRARY_DIR}
+  sundials_nvecserial ${SUNDIALS_LIBRARY_DIR} PATHS ${SUNDIALS_LIBRARY_DIR} NO_DEFAULT_PATH
   DOC "NVECTOR_SERIAL library")
 
 find_library(SUNDIALS_MANYVEC_LIB
-  sundials_nvecmanyvector ${SUNDIALS_LIBRARY_DIR}
+  sundials_nvecmanyvector ${SUNDIALS_LIBRARY_DIR} PATHS ${SUNDIALS_LIBRARY_DIR} NO_DEFAULT_PATH
   DOC "NVECTOR_MANYVECTOR library")
 
 message("SUNDIALS_LIBRARY_DIR: ${SUNDIALS_LIBRARY_DIR}")
