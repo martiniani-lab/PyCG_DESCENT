@@ -62,11 +62,11 @@ set(SUNDIALS_LIBRARIES
 
 message("python include dirs: ${PYTHON_INCLUDE_DIRS}")
 message("numpy include dirs: ${numpy_include}")
-message("pele include dirs: ${pele_include}")
+message("pele include dirs: ${pele_dir}")
 include_directories(${numpy_include})
 include_directories(SYSTEM ${MPI_INCLUDE_DIR})
 include_directories(${PYTHON_INCLUDE_DIRS})
-include_directories(${pele_include})
+include_directories(${pele_dir})
 include_directories(${LAPACKE_INCLUDE_DIR})
 include_directories(${SUNDIALS_INCLUDE_DIR})
 
