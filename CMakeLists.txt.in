@@ -12,6 +12,11 @@ set(PYTHON_INCLUDE_DIRS __PYTHON_INCLUDE__)
 set(PYTHON_LDFLAGS "__PYTHON_LDFLAGS__")
 set(pele_dir __PELE_INCLUDE__)
 
+# osx makes the suffix for shared object libraries .dylib
+IF(APPLE)
+  SET(CMAKE_SHARED_LIBRARY_SUFFIX ".so")
+ENDIF(APPLE)
+
 # BLAS and LAPACK
 find_package(BLAS REQUIRED)
 find_package(LAPACK REQUIRED)
@@ -87,6 +92,23 @@ FILE(GLOB pele_sources ${PyCG_DESCENT_include}/PyCG_DESCENT/*.cpp)
 FILE(GLOB PyCG_DESCENT_sources ${PyCG_DESCENT_include}/CG_DESCENT/*.c*)
 add_library(PyCG_DESCENT_lib SHARED ${PyCG_DESCENT_sources} ${pele_sources})
 
+# Apple changed the ld linker in Xcode 15 which breaks the build.
+# The classic linker can be chosen with -ld_classic flag.
+# However, on older Xcode versions, this flag throws an error.
+# Thus, we simply check here whether this flag exists.
+# See https://www.scivision.dev/xcode-ld_classic/
+# For the undefined flag, see
+# https://github.com/nasa/cFE/issues/476#issuecomment-579436106
+if(APPLE)
+  include(CheckLinkerFlag)
+  check_linker_flag(C "-ld_classic" CLASSIC_FLAG)
+  if(CLASSIC_FLAG)
+    set(APPLE_LINK_OPTIONS "LINKER:-undefined,dynamic_lookup,-ld_classic")
+  else(CLASSIC_FLAG)
+    set(APPLE_LINK_OPTIONS "LINKER:-undefined,dynamic_lookup")
+  endif(CLASSIC_FLAG)
+endif(APPLE)
+
 function(make_cython_lib cython_cxx_source)
   get_filename_component(library_name ${cython_cxx_source} NAME)
   string(REGEX REPLACE ".cxx$" "" library_name ${library_name})
@@ -94,6 +116,9 @@ function(make_cython_lib cython_cxx_source)
   target_link_libraries(${library_name} PyCG_DESCENT_lib)
   target_link_libraries(${library_name} ${SUNDIALS_LIBRARIES})
   target_link_libraries(${library_name} ${LAPACK_LIBRARIES})
+  if(APPLE)
+    target_link_options(${library_name} PUBLIC ${APPLE_LINK_OPTIONS})
+  endif(APPLE)
   set_target_properties(${library_name} PROPERTIES PREFIX "")
   message("making library ${library_name} from source ${cython_cxx_source}")
 endfunction(make_cython_lib)
