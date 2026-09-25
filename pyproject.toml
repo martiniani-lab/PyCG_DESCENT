@@ -1,0 +1,20 @@
+[build-system]
+# pele is needed at build time for its C++ headers and .pxd files; it is not on
+# PyPI, so build with `pip install --no-build-isolation .` in an env that has pele.
+requires = ["setuptools>=65", "wheel", "numpy>=1.24", "cython>=3", "cmake>=3.18", "ninja", "pele"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "PyCG_DESCENT"
+version = "0.1.0"
+description = "Python wrapper for the CG_DESCENT algorithm by William W. Hager and Hongchao Zhang"
+readme = "README.rst"
+license = { file = "LICENSE" }
+requires-python = ">=3.10"
+dependencies = ["pele", "numpy>=1.24"]
+
+[project.optional-dependencies]
+test = ["pytest"]
+
+[project.urls]
+Homepage = "https://github.com/martiniani-lab/PyCG_DESCENT"
