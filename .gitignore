@@ -11,3 +11,4 @@ cpp_tests/gtest/
 cythonize.dat
 CMakeLists.txt
 PyCG_DESCENT/version.py
+*.egg-info/

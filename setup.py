@@ -174,8 +174,6 @@ class build_ext_precompiled(old_build_ext):
     extension.sources[0]) to where setuptools expects the extension."""
 
     def run(self):
-        with open("PyCG_DESCENT/version.py", "w") as f:
-            f.write(f"# GENERATED\ngit_revision = '{git_version()}'\n")
         pele_include, pele_pkg, prefix_paths = pele_paths()
         generate_cython(pele_pkg)
         write_cmakelists(pele_include, prefix_paths)
@@ -208,6 +206,10 @@ extensions = [
     )
     for src in cxx_files
 ]
+
+# written before setup() so build_py installs the current one
+with open("PyCG_DESCENT/version.py", "w") as f:
+    f.write("\n# THIS FILE IS GENERATED FROM SCIPY SETUP.PY\ngit_revision = '%s'\n" % git_version())
 
 # metadata lives in pyproject.toml
 setup(
