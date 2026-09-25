@@ -1,4 +1,3 @@
-from builtins import object
 import unittest
 import numpy as np
 import os
@@ -17,7 +16,7 @@ class _E(BasePotential):
     def getEnergy(self, x):
         return np.dot(x, x)
 
-class _EG(object):
+class _EG:
     def getEnergy(self, x):
         return np.dot(x, x)
 

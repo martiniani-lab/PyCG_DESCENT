@@ -1,3 +1,4 @@
+# cython: language_level=3str
 cimport pele.potentials._pele as _pele
 from pele.potentials._pele cimport shared_ptr
 from libcpp cimport bool as cbool
