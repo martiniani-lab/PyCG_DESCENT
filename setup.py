@@ -1,4 +1,4 @@
-"""Build PyCG_DESCENT. Works with `pip install --no-build-isolation .` and `python setup.py build_ext -i`.
+"""Build PyCG_DESCENT. Works with `pip install .` and `python setup.py build_ext -i`.
 
 pele must be importable (installed, or a source checkout on PYTHONPATH). Its C++
 headers are found with pele.get_include(). The Cython extensions are compiled by
@@ -11,6 +11,8 @@ Options (command-line flags for direct `setup.py` use, env vars for pip):
   --native / PYCGD_NATIVE         1 (default) adds -march=native; set 0 for portable binaries
 """
 import argparse
+import importlib.machinery
+import importlib.util
 import os
 import shlex
 import shutil
@@ -83,21 +85,37 @@ def git_version():
         return "Unknown"
 
 
+def package_dir(name):
+    """Directory of an installed dependency, found without importing it. pele is not on
+    PyPI so it can't be a build requirement; under pip's build isolation the
+    environment's site-packages is off sys.path, so it is searched too."""
+    site = list({sysconfig.get_paths()["purelib"], sysconfig.get_paths()["platlib"]})
+    spec = importlib.util.find_spec(name) or importlib.machinery.PathFinder.find_spec(name, site)
+    if spec is None or not spec.submodule_search_locations:
+        raise RuntimeError(f"{name} must be installed first: "
+                           f"pip install git+https://github.com/martiniani-lab/{name}")
+    return os.path.abspath(spec.submodule_search_locations[0])
+
+
 def pele_paths():
     """(pele C++ source dir, pele python package dir, extra cmake prefix paths)"""
-    import pele
-
-    pele_include = pele.get_include()
+    pele_pkg = package_dir("pele")
+    # same rule as pele.get_include(): installed next to the package, or a checkout's source/
+    pele_include = os.path.join(pele_pkg, "source")
+    if not os.path.isdir(pele_include):
+        pele_include = os.path.join(os.path.dirname(pele_pkg), "source")
     # a pele source checkout may carry its own sundials/eigen in extern/install
     extern = os.path.join(os.path.dirname(pele_include), "extern", "install")
-    return pele_include, os.path.dirname(pele.__file__), [extern] if os.path.isdir(extern) else []
+    # the environment prefix (sundials, eigen, lapack): under pip's build isolation cmake
+    # comes from PyPI and no longer searches the conda env on its own
+    return pele_include, pele_pkg, ([extern] if os.path.isdir(extern) else []) + [sys.prefix]
 
 
 def generate_cython(pele_pkg):
     cwd = os.path.abspath(os.path.dirname(__file__))
     print("Cythonizing sources")
     cmd = [sys.executable, os.path.join(cwd, "cythonize.py"), "PyCG_DESCENT",
-           "-I", os.path.join(pele_pkg, "potentials")]
+           "-I", os.path.join(pele_pkg, "potentials"), "-I", os.path.dirname(pele_pkg)]
     if build_type in ["Debug", "RelWithDebInfo", "MemCheck"]:
         cmd += ["--gdb", "--annotate", "-X", "linetrace=True", "-X", "boundscheck=True",
                 "-X", "wraparound=False", "-X", "cdivision=False"]
