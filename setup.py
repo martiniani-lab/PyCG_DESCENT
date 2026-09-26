@@ -113,7 +113,9 @@ def get_ldflags():
     if not gv("Py_ENABLE_SHARED"):
         libs.insert(0, "-L" + gv("LIBDIR"))
     if not gv("PYTHONFRAMEWORK"):
-        libs += (gv("LINKFORSHARED") or "").split()
+        # -stack_size is only valid for executables, see
+        # https://github.com/kovidgoyal/kitty/issues/289#issuecomment-416040645
+        libs += [f for f in (gv("LINKFORSHARED") or "").split() if not f.startswith("-Wl,-stack_size")]
     return " ".join(libs)
 
 
