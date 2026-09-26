@@ -141,6 +141,14 @@ def get_compiler_env(cid):
     """CC/CXX from the environment (e.g. conda compilers) are respected"""
     env = os.environ.copy()
     if cid == "unix":
+        # match pele: on macOS use the newest homebrew gcc-N (Apple clang has no -fopenmp,
+        # and libc++ vs libstdc++ would break C++ objects shared with pele's extensions)
+        if sys.platform.startswith("darwin") and "CC" not in env:
+            version = next((v for v in range(20, 9, -1) if shutil.which(f"gcc-{v}")), None)
+            if version is None:
+                raise RuntimeError("Could not find a homebrew GNU compiler gcc-N (N=10..20) on PATH. "
+                                   "Install one or set CC and CXX.")
+            env["CC"], env["CXX"] = shutil.which(f"gcc-{version}"), shutil.which(f"g++-{version}")
         env.setdefault("CC", "gcc")
         env.setdefault("CXX", "g++")
         args = []
