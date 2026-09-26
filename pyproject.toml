@@ -1,7 +1,7 @@
 [build-system]
-# pele is needed at build time for its C++ headers and .pxd files; it is not on
-# PyPI, so build with `pip install --no-build-isolation .` in an env that has pele.
-requires = ["setuptools>=65", "wheel", "numpy>=1.24", "cython>=3", "cmake>=3.18", "ninja", "pele"]
+# pele is needed at build time for its C++ sources and .pxd files. It is not on PyPI, so
+# setup.py finds the pele installed in the environment (install pele first).
+requires = ["setuptools>=65", "wheel", "numpy>=1.24", "cython>=3", "cmake>=3.18", "ninja"]
 build-backend = "setuptools.build_meta"
 
 [project]
