@@ -106,7 +106,9 @@ def pele_paths():
         pele_include = os.path.join(os.path.dirname(pele_pkg), "source")
     # a pele source checkout may carry its own sundials/eigen in extern/install
     extern = os.path.join(os.path.dirname(pele_include), "extern", "install")
-    return pele_include, pele_pkg, [extern] if os.path.isdir(extern) else []
+    # the environment prefix (sundials, eigen, lapack): under pip's build isolation cmake
+    # comes from PyPI and no longer searches the conda env on its own
+    return pele_include, pele_pkg, ([extern] if os.path.isdir(extern) else []) + [sys.prefix]
 
 
 def generate_cython(pele_pkg):
