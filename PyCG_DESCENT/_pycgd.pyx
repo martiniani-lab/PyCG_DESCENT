@@ -1,4 +1,6 @@
 # distutils: language = c++
+# distutils: define_macros=NPY_NO_DEPRECATED_API=NPY_1_7_API_VERSION
+# cython: language_level=3str
 import sys
 import numpy as np
 from pele.potentials._pythonpotential import as_cpp_potential
@@ -11,8 +13,8 @@ cdef pele_array_to_np_array(_pele.Array[double] v):
     """copy a pele Array into a new numpy array"""
     cdef np.ndarray[double, ndim=1] vnew = np.zeros(v.size(), dtype=float)
     cdef int i
-    cdef int N = vnew.size
-    for i in xrange(N):
+    cdef int N = vnew.shape[0]
+    for i in range(N):
         vnew[i] = v[i]
     
     return vnew
@@ -30,7 +32,7 @@ cdef class _Cdef_CGDescent(object):
         self.pot = potential
         cdef np.ndarray[double, ndim=1] x0c = np.array(x0, dtype=float)
         self.thisptr = shared_ptr[_pycgd.cCGDescent](new cCGDescent(self.pot.thisptr, 
-                             _pele.Array[double](<double*> x0c.data, x0c.size), tol, print_level))
+                             _pele.Array[double](<double*> x0c.data, x0c.shape[0]), tol, print_level))
         self.set_memory(M)
         self.set_maxiter(nsteps)
         
@@ -65,7 +67,7 @@ cdef class _Cdef_CGDescent(object):
         res: void
         """
         cdef np.ndarray[double, ndim=1] ccoords = np.array(coords, dtype=float)
-        self.thisptr.get().reset(_pele.Array[double](<double*> ccoords.data, ccoords.size))
+        self.thisptr.get().reset(_pele.Array[double](<double*> ccoords.data, ccoords.shape[0]))
 
     def get_iter(self):
         """ get number of iterattions
